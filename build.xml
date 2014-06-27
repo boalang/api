@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+<project name="boa-api" default="package">
+	<!-- Java version -->
+	<property name="ant.build.javac.source" value="1.7" />
+	<property name="ant.build.javac.target" value="1.7" />
+
+	<!-- debug properties -->
+	<property name="debug.enabled" value="on" />
+	<property name="debug.level" value="lines,vars,source" />
+
+
+	<!-- paths -->
+	<path id="class.path">
+		<fileset dir="lib">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+
+	<path id="src.paths">
+		<pathelement location="src" />
+	</path>
+	<property name="src.paths" refid="src.paths" />
+
+
+	<!-- ensure target dirs exist -->
+	<target name="-init">
+		<mkdir dir="bin" />
+		<mkdir dir="dist" />
+	</target>
+
+	<!-- main compilation targets -->
+	<target name="compile" depends="-init" description="Compile the library.">
+		<javac includeantruntime="true" srcdir="${src.paths}" destdir="bin" debug="${debug.enabled}" debuglevel="${debug.level}">
+			<classpath refid="class.path" />
+		</javac>
+	</target>
+
+	<target name="clean-src" description="Clean the compiled files.">
+		<delete>
+			<fileset dir="bin">
+				<patternset>
+					<include name="**" />
+				</patternset>
+			</fileset>
+		</delete>
+	</target>
+
+
+	<!-- packaging -->
+	<target name="package" depends="compile" description="Package the library JAR.">
+		<jar destfile="dist/boa-client.jar">
+			<fileset dir="bin">
+				<patternset>
+					<include name="**" />
+				</patternset>
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="clean-dist" description="Clean all JAR files.">
+		<delete dir="dist" />
+	</target>
+
+
+	<!-- project cleanup -->
+	<target name="clean" description="Clean all generated/compiled files.">
+		<delete dir="bin" />
+		<delete dir="dist" />
+	</target>
+</project>
