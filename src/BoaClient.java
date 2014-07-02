@@ -37,6 +37,7 @@ public class BoaClient {
     private static final String METHOD_USER_LOGOUT = "user.logout";
 
     private static final String METHOD_BOA_DATASETS = "boa.datasets";
+    private static final String METHOD_BOA_JOBS = "boa.jobs";
 
     private final XmlRpcClient xmlRpcClient = new XmlRpcClient();
 	private boolean loggedIn = false;
@@ -128,6 +129,7 @@ public class BoaClient {
     public void logout() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
+
 		try {
 			xmlRpcClient.execute(METHOD_USER_LOGOUT, new Object[] {});
 		} catch (final XmlRpcException e) {
@@ -145,8 +147,46 @@ public class BoaClient {
     public Map<String, String> getDatasets() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
+
 		try {
 			return (Map<String, String>) xmlRpcClient.execute(METHOD_BOA_DATASETS, new Object[] {});
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+    }
+
+    public String[] getLastJob() throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		final String[][] jobs = jobList();
+		if (jobs.length == 0)
+			return new String[0];
+		return jobs[0];
+	}
+
+    public String[][] jobList() throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		try {
+			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_BOA_JOBS, new Object[] {});
+
+			if (result.length == 0)
+				return new String[0][0];
+
+			final Object[] first = (Object[])result[0];
+			if (first.length == 0)
+				return new String[0][0];
+
+			final String[][] jobs = new String[result.length][first.length];
+			for (int i = 0; i < result.length; i++) {
+				final Object[] arr = (Object[])result[i];
+				for (int j = 0; j < arr.length; j++)
+					jobs[i][j] = (String)arr[j];
+			}
+
+			return jobs;
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -157,24 +197,28 @@ public class BoaClient {
 	}
 
     public static void main(final String[] args) throws Exception {
-    	final BoaClient service = new BoaClient();
+    	final BoaClient client = new BoaClient();
 
 		if (args.length != 2) {
 			System.err.println("Error: expected username and password as argument");
 			System.exit(-1);
 		}
 
-        service.login(args[0], args[1]);
+        client.login(args[0], args[1]);
         System.out.println("logged in");
 
-		final Map<String, String> datasets = service.getDatasets();
+		final Map<String, String> datasets = client.getDatasets();
 		final List<String> keys = new ArrayList<String>();
 		keys.addAll(datasets.keySet());
 		Collections.sort(keys);
 		for (final String k : keys)
 			System.out.println(k + " - " + datasets.get(k));
 
-        service.logout();
+		System.out.println("Last job submitted: " + client.getLastJob()[1]);
+
+		//int id = client.run("....", 3);
+
+        client.logout();
         System.out.println("logged out");
     }
 }
