@@ -81,12 +81,20 @@ public class BoaClient {
 		}
     }
 
-    public void logout() throws XmlRpcException {
-        xmlRpcClient.execute(METHOD_USER_LOGOUT, new Object[] {});
+    public void logout() throws BoaException {
+		try {
+			xmlRpcClient.execute(METHOD_USER_LOGOUT, new Object[] {});
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
     }
 
-    public Map<String, String> getDatasets() throws XmlRpcException {
-        return (Map<String, String>) xmlRpcClient.execute(METHOD_BOA_DATASETS, new Object[] {});
+    public Map<String, String> getDatasets() throws BoaException {
+		try {
+			return (Map<String, String>) xmlRpcClient.execute(METHOD_BOA_DATASETS, new Object[] {});
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
     }
 
 	private String getError() {
