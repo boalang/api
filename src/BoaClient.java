@@ -71,11 +71,13 @@ public class BoaClient {
 		} catch (final XmlRpcHttpTransportException e) {
 			throw new LoginException("Invalid path given to Boa API.", e);
 		} catch (final XmlRpcException e) {
+			if (e.getMessage().indexOf("username") != -1)
+				throw new LoginException("Invalid username or password.", e);
 			if (e.getMessage().indexOf("response") != -1)
 				throw new LoginException("Invalid domain given to Boa API.", e);
 			if (e.getMessage().indexOf(":") != -1)
 				throw new LoginException(e.getMessage().substring(e.getMessage().indexOf(":") + 2), e);
-			throw new LoginException("Invalid username or password.", e);
+			throw new LoginException(e.getMessage(), e);
 		}
     }
 
