@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, Robert Dyer.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -9,6 +24,11 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.client.*;
 
+/**
+ * A client class for accessing Boa's API.
+ *
+ * @author rdyer
+ */
 public class BoaClient {
 	private static final String BOA_DOMAIN = "boa.cs.iastate.edu";
 	private static final String BOA_PATH = "/boa/?q=boa/api";
@@ -18,12 +38,22 @@ public class BoaClient {
 
     private static final String METHOD_BOA_DATASETS = "boa.datasets";
 
-    private final XmlRpcClient xmlRpcClient;
+    private final XmlRpcClient xmlRpcClient = new XmlRpcClient();
+	private boolean loggedIn = false;
 
+	/**
+	 * Create a new Boa API client, using the standard domain/path.
+	 */
     public BoaClient() {
     	this(BOA_DOMAIN, BOA_PATH);
     }
 
+	/**
+	 * Create a new Boa API client by providing the domain/path to the API.
+	 *
+	 * @param domain the domain hosting the API
+	 * @param path the path to the API
+	 */
     public BoaClient(final String domain, final String path) {
 		if (domain.indexOf("/") != -1)
 			throw new IllegalArgumentException("Argument 'domain' should not contain the protocol (http://) or a path (/).");
@@ -43,11 +73,19 @@ public class BoaClient {
 			// only happens if no/invalid protocol given, but we ensure this never happens
 		}
 
-        xmlRpcClient = new XmlRpcClient();
         xmlRpcClient.setConfig(config);
     }
 
-    public Map<String, String> login(final String username, final String password) throws LoginException {
+	/**
+	 * Method to log into the remote API.
+	 *
+	 * @param username the Boa username to use to log in
+	 * @param password the password for the user
+	 * @throws LoginException if the login failed for any reason
+	 */
+    public void login(final String username, final String password) throws LoginException {
+		this.loggedIn = false;
+
 		try {
 			final Map<String, String> response = (Map<String, String>) xmlRpcClient.execute(METHOD_USER_LOGIN, new String[] { username, password });
 
@@ -67,7 +105,7 @@ public class BoaClient {
 				}
 			});
 
-			return response;
+			this.loggedIn = true;
 		} catch (final XmlRpcHttpTransportException e) {
 			throw new LoginException("Invalid path given to Boa API.", e);
 		} catch (final XmlRpcException e) {
@@ -81,7 +119,15 @@ public class BoaClient {
 		}
     }
 
-    public void logout() throws BoaException {
+	/**
+	 * Logs out of the Boa API.
+	 *
+	 * @throws BoaException if the logout fails for any reason
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+    public void logout() throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
 		try {
 			xmlRpcClient.execute(METHOD_USER_LOGOUT, new Object[] {});
 		} catch (final XmlRpcException e) {
@@ -89,7 +135,16 @@ public class BoaClient {
 		}
     }
 
-    public Map<String, String> getDatasets() throws BoaException {
+	/**
+	 * Returns a list of available input datasets.
+	 *
+	 * @return a {@link java.util.Map} where keys are dataset IDs and values are their names
+	 * @throws BoaException if the logout fails for any reason
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+    public Map<String, String> getDatasets() throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
 		try {
 			return (Map<String, String>) xmlRpcClient.execute(METHOD_BOA_DATASETS, new Object[] {});
 		} catch (final XmlRpcException e) {
