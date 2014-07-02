@@ -49,6 +49,9 @@
 	<!-- packaging -->
 	<target name="package" depends="compile" description="Package the library JAR.">
 		<jar destfile="dist/boa-client.jar">
+			<manifest>
+				<attribute name="Main-Class" value="BoaClient" />
+			</manifest>
 			<fileset dir="bin">
 				<patternset>
 					<include name="**" />
