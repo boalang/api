@@ -13,14 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package edu.iastate.cs.boa;
 
 /**
- * Exception thrown in the case of a problem logging in to the API.
+ * The base class for any exception thrown by the Boa API.
  *
  * @author rdyer
  */
-public class LoginException extends BoaException {
-	public LoginException(final String msg, final Exception e) {
+public class BoaException extends Exception {
+	BoaException() {
+		super();
+	}
+
+	BoaException(final String msg) {
+		super(msg);
+	}
+
+	BoaException(final String msg, final Exception e) {
 		super(msg, e);
 	}
 }

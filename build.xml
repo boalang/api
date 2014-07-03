@@ -50,7 +50,7 @@
 	<target name="package" depends="compile" description="Package the library JAR.">
 		<jar destfile="dist/boa-client.jar">
 			<manifest>
-				<attribute name="Main-Class" value="BoaClient" />
+				<attribute name="Main-Class" value="edu.iastate.cs.boa.BoaClient" />
 			</manifest>
 			<fileset dir="bin">
 				<patternset>

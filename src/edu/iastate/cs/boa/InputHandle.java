@@ -13,13 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package edu.iastate.cs.boa;
 
 /**
- * Exception thrown when attempting to use the API but not logged in.
+ * Represents a handle to an input dataset.  Can not be created, only returned
+ * from Boa API calls.
  *
  * @author rdyer
  */
-public class NotLoggedInException extends BoaException {
-	public NotLoggedInException() {
+public final class InputHandle {
+	private final long id;
+	public final long getId() { return id; }
+
+	private final String name;
+	public final String getName() { return name; }
+
+	InputHandle(final long id, final String name) throws BoaException {
+		this.id = id;
+		this.name = name;
+	}
+
+	public final String toString() {
+		return id + ", " + name;
 	}
 }

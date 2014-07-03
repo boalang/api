@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package edu.iastate.cs.boa;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,14 +35,14 @@ public class BoaClient {
 	private static final String BOA_DOMAIN = "boa.cs.iastate.edu";
 	private static final String BOA_PATH = "/boa/?q=boa/api";
 
-	private static final String METHOD_USER_LOGIN = "user.login";
-    private static final String METHOD_USER_LOGOUT = "user.logout";
+	protected static final String METHOD_USER_LOGIN = "user.login";
+    protected static final String METHOD_USER_LOGOUT = "user.logout";
 
-    private static final String METHOD_BOA_DATASETS = "boa.datasets";
-    private static final String METHOD_BOA_JOBS = "boa.jobs";
+    protected static final String METHOD_BOA_DATASETS = "boa.datasets";
+    protected static final String METHOD_BOA_JOBS = "boa.jobs";
 
-    private final XmlRpcClient xmlRpcClient = new XmlRpcClient();
-	private boolean loggedIn = false;
+    protected final XmlRpcClient xmlRpcClient = new XmlRpcClient();
+	protected boolean loggedIn = false;
 
 	/**
 	 * Create a new Boa API client, using the standard domain/path.
@@ -52,8 +54,8 @@ public class BoaClient {
 	/**
 	 * Create a new Boa API client by providing the domain/path to the API.
 	 *
-	 * @param domain the domain hosting the API
-	 * @param path the path to the API
+	 * @param domain the domain hosting the API (can not contain '/')
+	 * @param path the path to the API (must start with '/')
 	 */
     public BoaClient(final String domain, final String path) {
 		if (domain.indexOf("/") != -1)
@@ -85,7 +87,7 @@ public class BoaClient {
 	 * @throws LoginException if the login failed for any reason
 	 */
     public void login(final String username, final String password) throws LoginException {
-		this.loggedIn = false;
+		loggedIn = false;
 
 		try {
 			final Map<String, String> response = (Map<String, String>) xmlRpcClient.execute(METHOD_USER_LOGIN, new String[] { username, password });
@@ -106,7 +108,7 @@ public class BoaClient {
 				}
 			});
 
-			this.loggedIn = true;
+			loggedIn = true;
 		} catch (final XmlRpcHttpTransportException e) {
 			throw new LoginException("Invalid path given to Boa API.", e);
 		} catch (final XmlRpcException e) {
@@ -141,50 +143,61 @@ public class BoaClient {
 	 * Returns a list of available input datasets.
 	 *
 	 * @return a {@link java.util.Map} where keys are dataset IDs and values are their names
-	 * @throws BoaException if the logout fails for any reason
+	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-    public Map<String, String> getDatasets() throws BoaException, NotLoggedInException {
+    public List<InputHandle> getDatasets() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
 
 		try {
-			return (Map<String, String>) xmlRpcClient.execute(METHOD_BOA_DATASETS, new Object[] {});
+			final Object[] result = (Object[]) xmlRpcClient.execute(METHOD_BOA_DATASETS, new Object[] {});
+
+			final List<InputHandle> datasets = new ArrayList<InputHandle>();
+			for (int i = 0; i < result.length; i++)
+				datasets.add(Util.parseDataset((Map<String, Object>)result[i]));
+
+			return datasets;
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
     }
 
-    public String[] getLastJob() throws BoaException, NotLoggedInException {
+	/**
+	 * Returns the most recent job.
+	 *
+	 * @return a {@link JobHandle} for the latest job, or <code>null</code> if no jobs exist
+	 * @throws BoaException if there was a problem reading from the server
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+    public JobHandle getLastJob() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
 
-		final String[][] jobs = jobList();
-		if (jobs.length == 0)
-			return new String[0];
-		return jobs[0];
+		final List<JobHandle> jobs = jobList();
+		if (jobs.isEmpty())
+			return null;
+
+		return jobs.get(0);
 	}
 
-    public String[][] jobList() throws BoaException, NotLoggedInException {
+	/**
+	 * Returns the most recent job.
+	 *
+	 * @return a {@link JobHandle} for the latest job, or <code>null</code> if no jobs exist
+	 * @throws BoaException if there was a problem reading from the server
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+    public List<JobHandle> jobList() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
 
 		try {
 			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_BOA_JOBS, new Object[] {});
 
-			if (result.length == 0)
-				return new String[0][0];
-
-			final Object[] first = (Object[])result[0];
-			if (first.length == 0)
-				return new String[0][0];
-
-			final String[][] jobs = new String[result.length][first.length];
-			for (int i = 0; i < result.length; i++) {
-				final Object[] arr = (Object[])result[i];
-				for (int j = 0; j < arr.length; j++)
-					jobs[i][j] = (String)arr[j];
-			}
+			final List<JobHandle> jobs = new ArrayList<JobHandle>();
+			for (int i = 0; i < result.length; i++)
+				jobs.add(Util.parseJob((Map<String, Object>)result[i]));
 
 			return jobs;
 		} catch (final XmlRpcException e) {
@@ -192,10 +205,10 @@ public class BoaClient {
 		}
     }
 
-	private String getError() {
-		return null;
-	}
-
+	/**
+	 * An example Boa client.  Takes the username and password as first 2 arguments
+	 * on commandline, then does some simple tasks to show the API works.
+	 */
     public static void main(final String[] args) throws Exception {
     	final BoaClient client = new BoaClient();
 
@@ -207,14 +220,11 @@ public class BoaClient {
         client.login(args[0], args[1]);
         System.out.println("logged in");
 
-		final Map<String, String> datasets = client.getDatasets();
-		final List<String> keys = new ArrayList<String>();
-		keys.addAll(datasets.keySet());
-		Collections.sort(keys);
-		for (final String k : keys)
-			System.out.println(k + " - " + datasets.get(k));
+		final List<InputHandle> datasets = client.getDatasets();
+		for (final InputHandle d : datasets)
+			System.out.println(d);
 
-		System.out.println("Last job submitted: " + client.getLastJob()[1]);
+		System.out.println("Last job submitted: " + client.getLastJob());
 
 		//int id = client.run("....", 3);
 
