@@ -156,12 +156,8 @@ public class BoaClient implements AutoCloseable {
 	 * Logs out of the Boa API.
 	 *
 	 * @throws BoaException if the logout fails for any reason
-	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-    public void close() throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
-
+    public void close() throws BoaException {
 		try {
 			xmlRpcClient.execute(METHOD_USER_LOGOUT, new Object[] {});
 		} catch (final XmlRpcException e) {
