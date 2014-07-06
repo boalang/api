@@ -18,7 +18,6 @@ package edu.iastate.cs.boa;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -120,6 +119,7 @@ public class BoaClient implements AutoCloseable {
 		loggedIn = false;
 
 		try {
+			@SuppressWarnings("unchecked")
 			final Map<String, String> response = (Map<String, String>) xmlRpcClient.execute(METHOD_USER_LOGIN, new String[] { username, password });
 
 			// construct a custom transport that sets the session cookie and CSRF token
@@ -172,7 +172,8 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-    public List<InputHandle> getDatasets() throws BoaException, NotLoggedInException {
+    @SuppressWarnings("unchecked")
+	public List<InputHandle> getDatasets() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
 
@@ -214,7 +215,8 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-    public List<JobHandle> jobList() throws BoaException, NotLoggedInException {
+    @SuppressWarnings("unchecked")
+	public List<JobHandle> jobList() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
 
