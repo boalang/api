@@ -26,7 +26,7 @@ import java.util.Map;
  *
  * @author rdyer
  */
-public final class Util {
+final class Util {
 	final static JobHandle parseJob(final Map<String, Object> job) throws BoaException {
 		verifyKeys(job, "id", "submitted", "input", "compiler_status", "hadoop_status");
 		return new JobHandle(
