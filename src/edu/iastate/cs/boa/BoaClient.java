@@ -29,6 +29,36 @@ import org.apache.xmlrpc.client.*;
 /**
  * A client class for accessing Boa's API.
  *
+ * <p>
+ * To use this class, first construct an object by either using the default
+ * constructor (to use the standard API domain/path) or providing the
+ * domain/path to the API.  Then call {@link #login(java.lang.String username, java.lang.String password)}
+ * with your Boa username and password to log into the remote API.
+ * </p>
+ *
+ * <p>
+ * When finished with the object, {@link #close()} must be called to log out of
+ * the remote API.  The class is also {@link AutoCloseable} for use in a
+ * try-with-resources block.
+ * </p>
+ *
+ * <p>
+ * Example usage:
+ * </p>
+ *
+ * <pre>
+ * try (final BoaClient client = new BoaClient()) {
+ *   client.login("user", "pass");
+ *
+ *   // print all available input datasets
+ *   for (final InputHandle d : client.getDatasets())
+ *     System.out.println(d);
+ *
+ *   // print info about the last job submitted
+ *   System.out.println("Last job submitted: " + client.getLastJob());
+ * }
+ * </pre>
+ *
  * @author rdyer
  */
 public class BoaClient implements AutoCloseable {
