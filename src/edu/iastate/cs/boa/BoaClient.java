@@ -234,31 +234,4 @@ public class BoaClient implements AutoCloseable {
 			throw new BoaException(e.getMessage(), e);
 		}
     }
-
-	/**
-	 * An example Boa client.  Takes the username and password as first 2 arguments
-	 * on commandline, then does some simple tasks to show the API works.
-	 */
-    public static void main(final String[] args) throws Exception {
-    	final BoaClient client = new BoaClient();
-
-		if (args.length != 2) {
-			System.err.println("Error: expected username and password as argument");
-			System.exit(-1);
-		}
-
-        client.login(args[0], args[1]);
-        System.out.println("logged in");
-
-		final List<InputHandle> datasets = client.getDatasets();
-		for (final InputHandle d : datasets)
-			System.out.println(d);
-
-		System.out.println("Last job submitted: " + client.getLastJob());
-
-		//int id = client.run("....", 3);
-
-        client.close();
-        System.out.println("logged out");
-    }
 }
