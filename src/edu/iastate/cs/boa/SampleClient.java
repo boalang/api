@@ -41,10 +41,13 @@ public class SampleClient {
 			System.out.println(d);
 
 		final JobHandle lastJob = client.getLastJob();
-		System.out.println("Last job submitted: " + lastJob);
+		System.out.println("Last job: " + lastJob);
 
-		lastJob.stop();
-		System.out.println("Stopped job: " + lastJob);
+		final JobHandle j = client.testQuery("o: output sum of int;\no << 1;");
+		System.out.println("Submitted: " + j);
+
+		j.stop();
+		System.out.println("Stopped job: " + j);
 
 		client.close();
 		System.out.println("logged out");

@@ -69,6 +69,7 @@ public class BoaClient implements AutoCloseable {
 
 	protected static final String METHOD_BOA_DATASETS = "boa.datasets";
 	protected static final String METHOD_BOA_JOBS     = "boa.jobs";
+	protected static final String METHOD_BOA_SUBMIT   = "boa.submit";
 
 	protected static final String METHOD_BOA_JOB_STOP            = "boa.job.stop";
 	protected static final String METHOD_BOA_JOB_RESUBMIT        = "boa.job.resubmit";
@@ -237,6 +238,47 @@ public class BoaClient implements AutoCloseable {
 				jobs.add(Util.parseJob(this, (Map<String, Object>)result[i]));
 
 			return jobs;
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Submits a new query to Boa to query the specified and returns a handle to the new job.
+	 *
+	 * @param query the query source code
+	 * @param dataset the input dataset to query
+	 * @return a {@link JobHandle} for the new job
+	 * @throws BoaException if there was a problem reading from the server
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	@SuppressWarnings("unchecked")
+	public JobHandle query(final String query, final InputHandle dataset) throws BoaException, NotLoggedInException{
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		try {
+			return Util.parseJob(this, (Map<String, Object>)xmlRpcClient.execute(METHOD_BOA_SUBMIT, new Object[] { query, dataset.getId() }));
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Submits a new query to Boa to query the latest (testing) dataset and returns a handle to the new job.
+	 *
+	 * @param query the query source code
+	 * @return a {@link JobHandle} for the new job
+	 * @throws BoaException if there was a problem reading from the server
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	@SuppressWarnings("unchecked")
+	public JobHandle testQuery(final String query) throws BoaException, NotLoggedInException{
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		try {
+			return Util.parseJob(this, (Map<String, Object>)xmlRpcClient.execute(METHOD_BOA_SUBMIT, new Object[] { query, getDatasets().get(0).getId() }));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
