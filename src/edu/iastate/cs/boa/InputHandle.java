@@ -33,6 +33,7 @@ public final class InputHandle {
 		this.name = name;
 	}
 
+	@Override
 	public final String toString() {
 		return id + ", " + name;
 	}
