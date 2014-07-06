@@ -310,23 +310,17 @@ public class BoaClient implements AutoCloseable {
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
-
-		throw new BoaException("The resubmit() method is not yet implemented.");
 	}
 
 	void delete(final long id) throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
 
-		/* TODO - implement on server side
 		try {
 			xmlRpcClient.execute(METHOD_BOA_JOB_DELETE, new Object[] { "" + id });
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
-		*/
-
-		throw new BoaException("The delete() method is not yet implemented.");
 	}
 
 	void setPublic(final long id, final boolean isPublic) throws BoaException, NotLoggedInException {
