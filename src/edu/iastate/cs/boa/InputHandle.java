@@ -22,13 +22,13 @@ package edu.iastate.cs.boa;
  * @author rdyer
  */
 public final class InputHandle {
-	private final long id;
-	public final long getId() { return id; }
+	private final int id;
+	public final int getId() { return id; }
 
 	private final String name;
 	public final String getName() { return name; }
 
-	InputHandle(final long id, final String name) throws BoaException {
+	InputHandle(final int id, final String name) throws BoaException {
 		this.id = id;
 		this.name = name;
 	}

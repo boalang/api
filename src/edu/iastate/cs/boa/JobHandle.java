@@ -28,8 +28,8 @@ import java.util.List;
 public final class JobHandle {
 	private final BoaClient client;
 
-	private final long id;
-	public final long getId() { return id; }
+	private final int id;
+	public final int getId() { return id; }
 
 	private final Date date;
 	public final Date getDate() { return date; }
@@ -43,7 +43,7 @@ public final class JobHandle {
 	private final String hadoop;
 	public final String getHadoopStatus() { return hadoop; }
 
-	JobHandle(final BoaClient client, final long id, final Date date, final InputHandle dataset, final String compiler, final String hadoop) {
+	JobHandle(final BoaClient client, final int id, final Date date, final InputHandle dataset, final String compiler, final String hadoop) {
 		this.client = client;
 		this.id = id;
 		this.date = date;

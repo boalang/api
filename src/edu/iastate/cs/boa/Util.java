@@ -32,7 +32,7 @@ final class Util {
 		verifyKeys(job, "id", "submitted", "input", "compiler_status", "hadoop_status");
 		return new JobHandle(
 			client,
-			strToLong((String)job.get("id")),
+			strToInt((String)job.get("id")),
 			strToDate((String)job.get("submitted")),
 			parseDataset((Map<String, Object>)job.get("input")),
 			(String)job.get("compiler_status"),
@@ -42,7 +42,7 @@ final class Util {
 
 	final static InputHandle parseDataset(final Map<String, Object> input) throws BoaException {
 		verifyKeys(input, "id", "name");
-		return new InputHandle(strToLong((String)input.get("id")), (String)input.get("name"));
+		return new InputHandle(strToInt((String)input.get("id")), (String)input.get("name"));
 	}
 
 	private static void verifyKeys(final Map<String, Object> m, final String... keys) throws BoaException {
@@ -62,9 +62,9 @@ final class Util {
 		}
 	}
 
-	private static long strToLong(final String s) throws BoaException {
+	private static int strToInt(final String s) throws BoaException {
 		try {
-			return Long.parseLong(s);
+			return Integer.parseInt(s);
 		} catch (final NumberFormatException e) {
 			throw new BoaException("Invalid number '" + s + "' from server.", e);
 		}
