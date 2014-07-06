@@ -23,9 +23,19 @@ package edu.iastate.cs.boa;
  */
 public final class InputHandle {
 	private final int id;
+	/**
+	 * Returns the input dataset's unique identifier.
+	 * 
+	 * @return the input dataset's id
+	 */
 	public final int getId() { return id; }
 
 	private final String name;
+	/**
+	 * Returns the human-readable name of the input dataset.
+	 * 
+	 * @return the input dataset's name
+	 */
 	public final String getName() { return name; }
 
 	InputHandle(final int id, final String name) throws BoaException {
@@ -33,6 +43,7 @@ public final class InputHandle {
 		this.name = name;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final String toString() {
 		return id + ", " + name;

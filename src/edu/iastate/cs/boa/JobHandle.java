@@ -29,32 +29,58 @@ public final class JobHandle {
 	private final BoaClient client;
 
 	private final int id;
+	/**
+	 * Returns the job's unique identifier.
+	 *
+	 * @return the job's id
+	 */
 	public final int getId() { return id; }
 
 	private final Date date;
+	/**
+	 * Returns the {@link Date} the job was last submitted.
+	 *
+	 * @return the last submitted {@link Date}
+	 */
 	public final Date getDate() { return date; }
 
 	private final InputHandle dataset;
+	/**
+	 * Returns the input dataset the job queried.
+	 *
+	 * @return an {@link InputHandle} to the input dataset queried
+	 */
 	public final InputHandle getDataset() { return dataset; }
 
-	private final String compiler;
-	public final String getCompilerStatus() { return compiler; }
+	private final String compilerStatus;
+	/**
+	 * Returns the compiler status for the job.
+	 *
+	 * @return the job's compiler status
+	 */
+	public final String getCompilerStatus() { return compilerStatus; }
 
-	private final String hadoop;
-	public final String getHadoopStatus() { return hadoop; }
+	private final String execStatus;
+	/**
+	 * Returns the execution status for the job.
+	 *
+	 * @return the job's execution status
+	 */
+	public final String getExecutionStatus() { return execStatus; }
 
-	JobHandle(final BoaClient client, final int id, final Date date, final InputHandle dataset, final String compiler, final String hadoop) {
+	JobHandle(final BoaClient client, final int id, final Date date, final InputHandle dataset, final String compilerStatus, final String execStatus) {
 		this.client = client;
 		this.id = id;
 		this.date = date;
 		this.dataset = dataset;
-		this.compiler = compiler;
-		this.hadoop = hadoop;
+		this.compilerStatus = compilerStatus;
+		this.execStatus = execStatus;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final String toString() {
-		return id + " (" + date + ") - " + dataset + " - compiler_status(" + compiler + ") hadoop_status(" + hadoop + ")";
+		return id + " (" + date + ") - " + dataset + " - compiler_status(" + compilerStatus + ") execution_status(" + execStatus + ")";
 	}
 
 	/**
@@ -90,7 +116,7 @@ public final class JobHandle {
 	/**
 	 * Marks a job as public/private.
 	 *
-	 * @param isPublic should the job be public (true) or private (false)
+	 * @param isPublic should the job be public (<code>true</code>) or private (<code>false</code>)
 	 * @throws BoaException if the command fails for any reason
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
@@ -122,6 +148,10 @@ public final class JobHandle {
 
 	/**
 	 * Get the job's public page URL.
+	 *
+	 * <b>Note that this will return a URL even if the job is not marked public.</b>
+	 * Make sure to call {@link #getPublic()} to verify the URL is valid.
+	 * @see #getPublic()
 	 *
 	 * @return a {@link java.net.URL} to view the job's public page
 	 * @throws BoaException if the command fails for any reason
