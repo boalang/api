@@ -31,7 +31,7 @@ import org.apache.xmlrpc.client.*;
  *
  * @author rdyer
  */
-public class BoaClient {
+public class BoaClient implements AutoCloseable {
 	private static final String BOA_DOMAIN = "boa.cs.iastate.edu";
 	private static final String BOA_PATH = "/boa/?q=boa/api";
 
@@ -128,7 +128,7 @@ public class BoaClient {
 	 * @throws BoaException if the logout fails for any reason
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-    public void logout() throws BoaException, NotLoggedInException {
+    public void close() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
 
@@ -228,7 +228,7 @@ public class BoaClient {
 
 		//int id = client.run("....", 3);
 
-        client.logout();
+        client.close();
         System.out.println("logged out");
     }
 }
