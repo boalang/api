@@ -46,6 +46,19 @@
 	</target>
 
 
+	<!-- docs -->
+	<target name="gen-docs" description="Generate the JavaDoc API documentation.">
+		<javadoc sourcepath="${src.paths}" destdir="docs/api" packagenames="edu.iastate.cs.boa" Public="true">
+			<classpath refid="class.path" />
+			<link href="http://docs.oracle.com/javase/7/docs/api/" />
+		</javadoc>
+	</target>
+
+	<target name="clean-docs" description="Clean all generated documentation files.">
+		<delete dir="docs/api" />
+	</target>
+
+
 	<!-- packaging -->
 	<target name="package" depends="compile" description="Package the library JAR.">
 		<jar destfile="dist/boa-client.jar">
@@ -72,5 +85,6 @@
 	<target name="clean" description="Clean all generated/compiled files.">
 		<delete dir="bin" />
 		<delete dir="dist" />
+		<delete dir="docs/api" />
 	</target>
 </project>
