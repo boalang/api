@@ -75,6 +75,7 @@ public class BoaClient implements AutoCloseable {
 	protected static final String METHOD_BOA_JOB_RESUBMIT        = "boa.job.resubmit";
 	protected static final String METHOD_BOA_JOB_DELETE          = "boa.job.delete";
 	protected static final String METHOD_BOA_JOB_SET_PUBLIC      = "boa.job.setpublic";
+	protected static final String METHOD_BOA_JOB_PUBLIC          = "boa.job.public";
 	protected static final String METHOD_BOA_JOB_URL             = "boa.job.url";
 	protected static final String METHOD_BOA_JOB_PUBLIC_URL      = "boa.job.publicurl";
 	protected static final String METHOD_BOA_JOB_COMPILER_ERRORS = "boa.job.compilerErrors";
@@ -343,6 +344,21 @@ public class BoaClient implements AutoCloseable {
 		*/
 
 		throw new BoaException("The setPublic() method is not yet implemented.");
+	}
+
+	boolean getPublic(final long id) throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		/* TODO - implement on server side
+		try {
+			return xmlRpcClient.execute(METHOD_BOA_JOB_PUBLIC, new Object[] { "" + id });
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+		*/
+
+		throw new BoaException("The getPublic() method is not yet implemented.");
 	}
 
 	URL getUrl(final long id) throws BoaException, NotLoggedInException {

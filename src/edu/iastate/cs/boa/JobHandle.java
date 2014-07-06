@@ -99,6 +99,17 @@ public final class JobHandle {
 	}
 
 	/**
+	 * Get the job's public/private status.
+	 *
+	 * @return <code>true</code> if the job is public, else <code>false</code>
+	 * @throws BoaException if the command fails for any reason
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public boolean getPublic() throws BoaException, NotLoggedInException {
+		return client.getPublic(id);
+	}
+
+	/**
 	 * Get the job's URL.
 	 *
 	 * @return a {@link java.net.URL} to view the job
