@@ -210,7 +210,7 @@ public class BoaClient implements AutoCloseable {
 		if (!loggedIn)
 			throw new NotLoggedInException();
 
-		final List<JobHandle> jobs = jobList();
+		final List<JobHandle> jobs = getJobList();
 		if (jobs.isEmpty())
 			return null;
 
@@ -218,14 +218,14 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	/**
-	 * Returns the most recent job.
+	 * Returns a list of the most recent jobs.
 	 *
 	 * @return a {@link JobHandle} for the latest job, or <code>null</code> if no jobs exist
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
 	@SuppressWarnings("unchecked")
-	public List<JobHandle> jobList() throws BoaException, NotLoggedInException {
+	public List<JobHandle> getJobList() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
 
