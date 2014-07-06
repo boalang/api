@@ -25,7 +25,7 @@ public final class InputHandle {
 	private final int id;
 	/**
 	 * Returns the input dataset's unique identifier.
-	 * 
+	 *
 	 * @return the input dataset's id
 	 */
 	public final int getId() { return id; }
@@ -33,7 +33,7 @@ public final class InputHandle {
 	private final String name;
 	/**
 	 * Returns the human-readable name of the input dataset.
-	 * 
+	 *
 	 * @return the input dataset's name
 	 */
 	public final String getName() { return name; }
