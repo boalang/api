@@ -21,6 +21,8 @@ package edu.iastate.cs.boa;
  * @author rdyer
  */
 public class BoaException extends Exception {
+	private static final long serialVersionUID = 978922343860883155L;
+
 	BoaException() {
 		super();
 	}

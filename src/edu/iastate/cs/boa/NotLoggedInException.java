@@ -21,4 +21,5 @@ package edu.iastate.cs.boa;
  * @author rdyer
  */
 public class NotLoggedInException extends BoaException {
+	private static final long serialVersionUID = -8471101542363899243L;
 }

@@ -21,6 +21,8 @@ package edu.iastate.cs.boa;
  * @author rdyer
  */
 public class LoginException extends BoaException {
+	private static final long serialVersionUID = 1780852607905037766L;
+
 	LoginException(final String msg, final Exception e) {
 		super(msg, e);
 	}
