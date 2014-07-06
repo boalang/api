@@ -27,9 +27,11 @@ import java.util.Map;
  * @author rdyer
  */
 final class Util {
-	final static JobHandle parseJob(final Map<String, Object> job) throws BoaException {
+	@SuppressWarnings("unchecked")
+	final static JobHandle parseJob(final BoaClient client, final Map<String, Object> job) throws BoaException {
 		verifyKeys(job, "id", "submitted", "input", "compiler_status", "hadoop_status");
 		return new JobHandle(
+			client,
 			strToLong((String)job.get("id")),
 			strToDate((String)job.get("submitted")),
 			parseDataset((Map<String, Object>)job.get("input")),

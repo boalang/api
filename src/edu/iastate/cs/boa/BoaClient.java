@@ -51,7 +51,7 @@ import org.apache.xmlrpc.client.*;
  *
  *   // print all available input datasets
  *   for (final InputHandle d : client.getDatasets())
- *     System.out.println(d);
+ *	 System.out.println(d);
  *
  *   // print info about the last job submitted
  *   System.out.println("Last job submitted: " + client.getLastJob());
@@ -62,23 +62,32 @@ import org.apache.xmlrpc.client.*;
  */
 public class BoaClient implements AutoCloseable {
 	private static final String BOA_DOMAIN = "boa.cs.iastate.edu";
-	private static final String BOA_PATH = "/boa/?q=boa/api";
+	private static final String BOA_PATH   = "/boa/?q=boa/api";
 
-	protected static final String METHOD_USER_LOGIN = "user.login";
-    protected static final String METHOD_USER_LOGOUT = "user.logout";
+	protected static final String METHOD_USER_LOGIN  = "user.login";
+	protected static final String METHOD_USER_LOGOUT = "user.logout";
 
-    protected static final String METHOD_BOA_DATASETS = "boa.datasets";
-    protected static final String METHOD_BOA_JOBS = "boa.jobs";
+	protected static final String METHOD_BOA_DATASETS = "boa.datasets";
+	protected static final String METHOD_BOA_JOBS     = "boa.jobs";
 
-    protected final XmlRpcClient xmlRpcClient = new XmlRpcClient();
+	protected static final String METHOD_BOA_JOB_STOP            = "boa.job.stop";
+	protected static final String METHOD_BOA_JOB_RESUBMIT        = "boa.job.resubmit";
+	protected static final String METHOD_BOA_JOB_DELETE          = "boa.job.delete";
+	protected static final String METHOD_BOA_JOB_SET_PUBLIC      = "boa.job.setpublic";
+	protected static final String METHOD_BOA_JOB_URL             = "boa.job.url";
+	protected static final String METHOD_BOA_JOB_PUBLIC_URL      = "boa.job.publicurl";
+	protected static final String METHOD_BOA_JOB_COMPILER_ERRORS = "boa.job.compilerErrors";
+	protected static final String METHOD_BOA_JOB_SOURCE          = "boa.job.source";
+
+	protected final XmlRpcClient xmlRpcClient = new XmlRpcClient();
 	protected boolean loggedIn = false;
 
 	/**
 	 * Create a new Boa API client, using the standard domain/path.
 	 */
-    public BoaClient() {
-    	this(BOA_DOMAIN, BOA_PATH);
-    }
+	public BoaClient() {
+		this(BOA_DOMAIN, BOA_PATH);
+	}
 
 	/**
 	 * Create a new Boa API client by providing the domain/path to the API.
@@ -86,7 +95,7 @@ public class BoaClient implements AutoCloseable {
 	 * @param domain the domain hosting the API (can not contain '/')
 	 * @param path the path to the API (must start with '/')
 	 */
-    public BoaClient(final String domain, final String path) {
+	public BoaClient(final String domain, final String path) {
 		if (domain.indexOf("/") != -1)
 			throw new IllegalArgumentException("Argument 'domain' should not contain the protocol (http://) or a path (/).");
 		if (path.indexOf("/") != 0)
@@ -97,16 +106,16 @@ public class BoaClient implements AutoCloseable {
 		 * a URL that is available for serving a specific set of service calls. See drupal
 		 * documentation for "Services 3.X". <a href="http://drupal.org/node/783236">http://drupal.org/node/783236</a>
 		 */
-        final String endpointURL = "http://" + domain + path;
-        final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+		final String endpointURL = "http://" + domain + path;
+		final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
 		try {
 			config.setServerURL(new URL(endpointURL));
 		} catch (final MalformedURLException e) {
 			// only happens if no/invalid protocol given, but we ensure this never happens
 		}
 
-        xmlRpcClient.setConfig(config);
-    }
+		xmlRpcClient.setConfig(config);
+	}
 
 	/**
 	 * Method to log into the remote API.
@@ -115,7 +124,7 @@ public class BoaClient implements AutoCloseable {
 	 * @param password the password for the user
 	 * @throws LoginException if the login failed for any reason
 	 */
-    public void login(final String username, final String password) throws LoginException {
+	public void login(final String username, final String password) throws LoginException {
 		loggedIn = false;
 
 		try {
@@ -150,20 +159,20 @@ public class BoaClient implements AutoCloseable {
 				throw new LoginException(e.getMessage().substring(e.getMessage().indexOf(":") + 2), e);
 			throw new LoginException(e.getMessage(), e);
 		}
-    }
+	}
 
 	/**
 	 * Logs out of the Boa API.
 	 *
 	 * @throws BoaException if the logout fails for any reason
 	 */
-    public void close() throws BoaException {
+	public void close() throws BoaException {
 		try {
 			xmlRpcClient.execute(METHOD_USER_LOGOUT, new Object[] {});
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
-    }
+	}
 
 	/**
 	 * Returns a list of available input datasets.
@@ -172,7 +181,7 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public List<InputHandle> getDatasets() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
@@ -188,7 +197,7 @@ public class BoaClient implements AutoCloseable {
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
-    }
+	}
 
 	/**
 	 * Returns the most recent job.
@@ -197,7 +206,7 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-    public JobHandle getLastJob() throws BoaException, NotLoggedInException {
+	public JobHandle getLastJob() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
 
@@ -215,7 +224,7 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public List<JobHandle> jobList() throws BoaException, NotLoggedInException {
 		if (!loggedIn)
 			throw new NotLoggedInException();
@@ -225,11 +234,132 @@ public class BoaClient implements AutoCloseable {
 
 			final List<JobHandle> jobs = new ArrayList<JobHandle>();
 			for (int i = 0; i < result.length; i++)
-				jobs.add(Util.parseJob((Map<String, Object>)result[i]));
+				jobs.add(Util.parseJob(this, (Map<String, Object>)result[i]));
 
 			return jobs;
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
-    }
+	}
+
+	//////////////////////////////////////////////////////////////////////
+	// the methods below are not meant to be called by clients directly //
+	// but rather through a handle                                      //
+	//////////////////////////////////////////////////////////////////////
+
+	void stop(final long id) throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		try {
+			xmlRpcClient.execute(METHOD_BOA_JOB_STOP, new Object[] { "" + id });
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+	}
+
+	void resubmit(final long id) throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		/* TODO - implement on server side
+		try {
+			xmlRpcClient.execute(METHOD_BOA_JOB_RESUBMIT, new Object[] { "" + id });
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+		*/
+
+		throw new BoaException("The resubmit() method is not yet implemented.");
+	}
+
+	void delete(final long id) throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		/* TODO - implement on server side
+		try {
+			xmlRpcClient.execute(METHOD_BOA_JOB_DELETE, new Object[] { "" + id });
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+		*/
+
+		throw new BoaException("The delete() method is not yet implemented.");
+	}
+
+	void setPublic(final long id, final boolean isPublic) throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		/* TODO - implement on server side
+		try {
+			xmlRpcClient.execute(METHOD_BOA_JOB_SET_PUBLIC, new Object[] { "" + id, isPublic });
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+		*/
+
+		throw new BoaException("The setPublic() method is not yet implemented.");
+	}
+
+	URL getUrl(final long id) throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		/* TODO - implement on server side
+		try {
+			return xmlRpcClient.execute(METHOD_BOA_JOB_URL, new Object[] { "" + id });
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+		*/
+
+		throw new BoaException("The getUrl() method is not yet implemented.");
+	}
+
+	URL getPublicUrl(final long id) throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		/* TODO - implement on server side
+		try {
+			return xmlRpcClient.execute(METHOD_BOA_JOB_PUBLIC_URL, new Object[] { "" + id });
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+		*/
+
+		throw new BoaException("The getPublicUrl() method is not yet implemented.");
+	}
+
+	List<String> getCompilerErrors(final long id) throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		/* TODO - implement on server side
+		try {
+			return xmlRpcClient.execute(METHOD_BOA_JOB_COMPILER_ERRORS, new Object[] { "" + id });
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+		*/
+
+		throw new BoaException("The getCompilerErrors() method is not yet implemented.");
+	}
+
+	String getSource(final long id) throws BoaException, NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+
+		/* TODO - implement on server side
+		try {
+			return xmlRpcClient.execute(METHOD_BOA_JOB_SOURCE, new Object[] { "" + id });
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+		*/
+
+		throw new BoaException("The getSource() method is not yet implemented.");
+	}
 }
