@@ -177,6 +177,17 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	/**
+	 * Checks if the API is logged in and if not, throws an
+	 * exception.
+	 *
+	 * @throws NotLoggedInException if the API is not logged in
+	 */
+	protected void ensureLoggedIn() throws NotLoggedInException {
+		if (!loggedIn)
+			throw new NotLoggedInException();
+	}
+
+	/**
 	 * Returns a list of available input datasets.
 	 *
 	 * @return a {@link java.util.Map} where keys are dataset IDs and values are their names
@@ -185,8 +196,7 @@ public class BoaClient implements AutoCloseable {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<InputHandle> getDatasets() throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		try {
 			final Object[] result = (Object[]) xmlRpcClient.execute(METHOD_BOA_DATASETS, new Object[] {});
@@ -209,8 +219,7 @@ public class BoaClient implements AutoCloseable {
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
 	public JobHandle getLastJob() throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		final List<JobHandle> jobs = getJobList();
 		if (jobs.isEmpty())
@@ -228,8 +237,7 @@ public class BoaClient implements AutoCloseable {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<JobHandle> getJobList() throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		try {
 			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_BOA_JOBS, new Object[] {});
@@ -255,8 +263,7 @@ public class BoaClient implements AutoCloseable {
 	 */
 	@SuppressWarnings("unchecked")
 	public JobHandle query(final String query, final InputHandle dataset) throws BoaException, NotLoggedInException{
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		try {
 			return Util.parseJob(this, (Map<String, Object>)xmlRpcClient.execute(METHOD_BOA_SUBMIT, new Object[] { query, dataset.getId() }));
@@ -275,8 +282,7 @@ public class BoaClient implements AutoCloseable {
 	 */
 	@SuppressWarnings("unchecked")
 	public JobHandle testQuery(final String query) throws BoaException, NotLoggedInException{
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		try {
 			return Util.parseJob(this, (Map<String, Object>)xmlRpcClient.execute(METHOD_BOA_SUBMIT, new Object[] { query, getDatasets().get(0).getId() }));
@@ -291,8 +297,7 @@ public class BoaClient implements AutoCloseable {
 	//////////////////////////////////////////////////////////////////////
 
 	void stop(final long id) throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		try {
 			xmlRpcClient.execute(METHOD_BOA_JOB_STOP, new Object[] { "" + id });
@@ -302,8 +307,7 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	void resubmit(final long id) throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		try {
 			xmlRpcClient.execute(METHOD_BOA_JOB_RESUBMIT, new Object[] { "" + id });
@@ -313,8 +317,7 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	void delete(final long id) throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		try {
 			xmlRpcClient.execute(METHOD_BOA_JOB_DELETE, new Object[] { "" + id });
@@ -324,8 +327,7 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	void setPublic(final long id, final boolean isPublic) throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		/* TODO - implement on server side
 		try {
@@ -339,8 +341,7 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	boolean getPublic(final long id) throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		/* TODO - implement on server side
 		try {
@@ -354,8 +355,7 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	URL getUrl(final long id) throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		/* TODO - implement on server side
 		try {
@@ -369,8 +369,7 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	URL getPublicUrl(final long id) throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		/* TODO - implement on server side
 		try {
@@ -384,8 +383,7 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	List<String> getCompilerErrors(final long id) throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		/* TODO - implement on server side
 		try {
@@ -399,8 +397,7 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	String getSource(final long id) throws BoaException, NotLoggedInException {
-		if (!loggedIn)
-			throw new NotLoggedInException();
+		ensureLoggedIn();
 
 		/* TODO - implement on server side
 		try {
