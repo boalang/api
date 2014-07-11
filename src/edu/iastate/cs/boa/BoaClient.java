@@ -203,7 +203,7 @@ public class BoaClient implements AutoCloseable {
 
 			final List<InputHandle> datasets = new ArrayList<InputHandle>();
 			for (int i = 0; i < result.length; i++)
-				datasets.add(Util.parseDataset((Map<String, Object>)result[i]));
+				datasets.add(Util.parseDataset((Map<?, ?>)result[i]));
 
 			return datasets;
 		} catch (final XmlRpcException e) {
@@ -244,7 +244,7 @@ public class BoaClient implements AutoCloseable {
 
 			final List<JobHandle> jobs = new ArrayList<JobHandle>();
 			for (int i = 0; i < result.length; i++)
-				jobs.add(Util.parseJob(this, (Map<String, Object>)result[i]));
+				jobs.add(Util.parseJob(this, (Map<?, ?>)result[i]));
 
 			return jobs;
 		} catch (final XmlRpcException e) {
@@ -266,7 +266,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			return Util.parseJob(this, (Map<String, Object>)xmlRpcClient.execute(METHOD_BOA_SUBMIT, new Object[] { query, dataset.getId() }));
+			return Util.parseJob(this, (Map<?, ?>)xmlRpcClient.execute(METHOD_BOA_SUBMIT, new Object[] { query, dataset.getId() }));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -285,7 +285,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			return Util.parseJob(this, (Map<String, Object>)xmlRpcClient.execute(METHOD_BOA_SUBMIT, new Object[] { query, getDatasets().get(0).getId() }));
+			return Util.parseJob(this, (Map<?, ?>)xmlRpcClient.execute(METHOD_BOA_SUBMIT, new Object[] { query, getDatasets().get(0).getId() }));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}

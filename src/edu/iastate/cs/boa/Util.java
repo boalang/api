@@ -28,7 +28,7 @@ import java.util.Map;
  */
 final class Util {
 	@SuppressWarnings("unchecked")
-	final static JobHandle parseJob(final BoaClient client, final Map<String, Object> job) throws BoaException {
+	final static JobHandle parseJob(final BoaClient client, final Map<?, ?> job) throws BoaException {
 		verifyKeys(job, "id", "submitted", "input", "compiler_status", "hadoop_status");
 		return new JobHandle(
 			client,
@@ -40,12 +40,12 @@ final class Util {
 		);
 	}
 
-	final static InputHandle parseDataset(final Map<String, Object> input) throws BoaException {
+	final static InputHandle parseDataset(final Map<?, ?> input) throws BoaException {
 		verifyKeys(input, "id", "name");
 		return new InputHandle(strToInt((String)input.get("id")), (String)input.get("name"));
 	}
 
-	private static void verifyKeys(final Map<String, Object> m, final String... keys) throws BoaException {
+	private static void verifyKeys(final Map<?, ?> m, final String... keys) throws BoaException {
 		for (final String k : keys)
 			if (!m.containsKey(k))
 				throw new BoaException("Invalid response from server: response does not contain key '" + k + "'.");
