@@ -15,13 +15,17 @@
  */
 package edu.iastate.cs.boa;
 
+import java.io.Serializable;
+
 /**
  * Represents a handle to an input dataset.  Can not be created, only returned
  * from Boa API calls.
  *
  * @author rdyer
  */
-public final class InputHandle {
+public final class InputHandle implements Serializable {
+	private static final long serialVersionUID = 8396340497942252663L;
+
 	private final int id;
 	/**
 	 * Returns the input dataset's unique identifier.

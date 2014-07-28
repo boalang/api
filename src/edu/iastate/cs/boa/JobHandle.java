@@ -15,6 +15,7 @@
  */
 package edu.iastate.cs.boa;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,9 @@ import java.util.List;
  *
  * @author rdyer
  */
-public final class JobHandle {
+public final class JobHandle implements Serializable {
+	private static final long serialVersionUID = 6601705556435705094L;
+
 	private final BoaClient client;
 
 	private final int id;

@@ -194,7 +194,6 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-	@SuppressWarnings("unchecked")
 	public List<InputHandle> getDatasets() throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
@@ -235,7 +234,6 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-	@SuppressWarnings("unchecked")
 	public List<JobHandle> getJobList() throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
@@ -261,7 +259,6 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-	@SuppressWarnings("unchecked")
 	public JobHandle query(final String query, final InputHandle dataset) throws BoaException, NotLoggedInException{
 		ensureLoggedIn();
 
@@ -280,7 +277,6 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-	@SuppressWarnings("unchecked")
 	public JobHandle testQuery(final String query) throws BoaException, NotLoggedInException{
 		ensureLoggedIn();
 
