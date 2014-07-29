@@ -230,6 +230,42 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	/**
+	 * Returns an array of available input dataset names.  Since datasets rarely change, the results may
+	 * be up to 1 day old.  The cache can be reset (see {@link #resetDatasetCache()}).
+	 *
+	 * @return a {@link java.util.Map} where keys are dataset IDs and values are their names
+	 * @throws BoaException if there was a problem reading from the server
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public String[] getDatasetNames() throws BoaException, NotLoggedInException {
+		final List<InputHandle> list = getDatasets();
+		final String[] items = new String[list.size()];
+
+		for (int i = 0; i < list.size(); i++)
+			items[i] = list.get(i).getName();
+
+		return items;
+	}
+
+	/**
+	 * Given the name of an input dataset, returns a handle (if one exists, otherwise <code>null</code>).
+	 * Since datasets rarely change, the results may be up to 1 day old.  The cache can be reset
+	 * (see {@link #resetDatasetCache()}).
+	 *
+	 * @param name the name of the input dataset to return a handle for
+	 * @return an {@link InputHandle} for the specified dataset name
+	 * @throws BoaException if there was a problem reading from the server
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public InputHandle getDataset(final String name) throws BoaException, NotLoggedInException {
+		for (final InputHandle h : getDatasets())
+			if (h.getName().equals(name))
+				return h;
+
+		return null;
+	}
+
+	/**
 	 * Returns the most recent job.
 	 *
 	 * @return a {@link JobHandle} for the latest job, or <code>null</code> if no jobs exist
