@@ -52,7 +52,7 @@ import org.apache.xmlrpc.client.*;
  *
  *   // print all available input datasets
  *   for (final InputHandle d : client.getDatasets())
- *	 System.out.println(d);
+ *     System.out.println(d);
  *
  *   // print info about the last job submitted
  *   System.out.println("Last job submitted: " + client.getLastJob());
@@ -188,8 +188,8 @@ public class BoaClient implements AutoCloseable {
 			throw new NotLoggedInException();
 	}
 
-	private List<InputHandle> datasetCache = null;
-	private long datasetCacheTime = 0;
+	protected List<InputHandle> datasetCache = null;
+	protected long datasetCacheTime = 0;
 
 	/**
 	 * Resets the internal dataset cache.
