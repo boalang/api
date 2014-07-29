@@ -1,5 +1,6 @@
 /*
- * Copyright 2014, Robert Dyer.
+ * Copyright 2014, Robert Dyer,
+ *                 and Bowling Green State University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +16,6 @@
  */
 package edu.iastate.cs.boa;
 
-import java.util.List;
-
 /**
  * An example Boa client.  Takes the username and password as first 2 arguments
  * on commandline, then does some simple tasks to show the API works.
@@ -31,24 +30,32 @@ public class SampleClient {
 			System.exit(-1);
 		}
 
+
+		// create a client and log into the remote server
 		final BoaClient client = new BoaClient();
 
 		client.login(args[0], args[1]);
 		System.out.println("logged in");
 
-		final List<InputHandle> datasets = client.getDatasets();
-		for (final InputHandle d : datasets)
+		
+		// dump the list of available input datasets
+		for (final InputHandle d : client.getDatasets())
 			System.out.println(d);
 
-		final JobHandle lastJob = client.getLastJob();
-		System.out.println("Last job: " + lastJob);
 
-		final JobHandle j = client.testQuery("o: output sum of int;\no << 1;");
+		// show the most recently submitted job
+		System.out.println("Last job: " + client.getLastJob());
+
+		
+		// create a new job by submitting a query and then do things with it
+		final JobHandle j = client.query("o: output sum of int;\no << 1;");
 		System.out.println("Submitted: " + j);
 
 		j.stop();
 		System.out.println("Stopped job: " + j);
 
+
+		// when finished, close the connection and log out of the remote server
 		client.close();
 		System.out.println("logged out");
 	}
