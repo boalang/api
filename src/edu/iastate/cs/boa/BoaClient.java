@@ -170,6 +170,7 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if the logout fails for any reason
 	 */
 	public void close() throws BoaException {
+		resetDatasetCache();
 		try {
 			xmlRpcClient.execute(METHOD_USER_LOGOUT, new Object[] {});
 		} catch (final XmlRpcException e) {
