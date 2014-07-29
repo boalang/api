@@ -188,24 +188,42 @@ public class BoaClient implements AutoCloseable {
 			throw new NotLoggedInException();
 	}
 
+	private List<InputHandle> datasetCache = null;
+	private long datasetCacheTime = 0;
+
 	/**
-	 * Returns a list of available input datasets.
+	 * Resets the internal dataset cache.
+	 */
+	public void resetDatasetCache() {
+		datasetCache = null;
+		datasetCacheTime = 0;
+	}
+
+	/**
+	 * Returns a list of available input datasets.  Since datasets rarely change, the results may
+	 * be up to 1 day old.  The cache can be reset (see {@link #resetDatasetCache()}).
 	 *
 	 * @return a {@link java.util.Map} where keys are dataset IDs and values are their names
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
 	public List<InputHandle> getDatasets() throws BoaException, NotLoggedInException {
+		// cache results for 1 day
+		if (datasetCache != null && datasetCacheTime + 86400000 > System.currentTimeMillis())
+			return datasetCache;
+
 		ensureLoggedIn();
 
 		try {
 			final Object[] result = (Object[]) xmlRpcClient.execute(METHOD_BOA_DATASETS, new Object[] {});
 
-			final List<InputHandle> datasets = new ArrayList<InputHandle>();
+			datasetCache = new ArrayList<InputHandle>();
 			for (int i = 0; i < result.length; i++)
-				datasets.add(Util.parseDataset((Map<?, ?>)result[i]));
+				datasetCache.add(Util.parseDataset((Map<?, ?>)result[i]));
 
-			return datasets;
+			datasetCacheTime = System.currentTimeMillis();
+
+			return datasetCache;
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
