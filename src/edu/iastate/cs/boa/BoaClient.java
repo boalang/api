@@ -332,7 +332,7 @@ public class BoaClient implements AutoCloseable {
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-	public JobHandle testQuery(final String query) throws BoaException, NotLoggedInException{
+	public JobHandle query(final String query) throws BoaException, NotLoggedInException{
 		ensureLoggedIn();
 
 		try {
