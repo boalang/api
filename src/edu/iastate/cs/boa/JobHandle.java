@@ -56,23 +56,23 @@ public final class JobHandle implements Serializable {
 	 */
 	public final InputHandle getDataset() { return dataset; }
 
-	private final String compilerStatus;
+	private final CompileStatus compilerStatus;
 	/**
 	 * Returns the compiler status for the job.
 	 *
 	 * @return the job's compiler status
 	 */
-	public final String getCompilerStatus() { return compilerStatus; }
+	public final CompileStatus getCompilerStatus() { return compilerStatus; }
 
-	private final String execStatus;
+	private final ExecutionStatus execStatus;
 	/**
 	 * Returns the execution status for the job.
 	 *
 	 * @return the job's execution status
 	 */
-	public final String getExecutionStatus() { return execStatus; }
+	public final ExecutionStatus getExecutionStatus() { return execStatus; }
 
-	JobHandle(final BoaClient client, final int id, final Date date, final InputHandle dataset, final String compilerStatus, final String execStatus) {
+	JobHandle(final BoaClient client, final int id, final Date date, final InputHandle dataset, final CompileStatus compilerStatus, final ExecutionStatus execStatus) {
 		this.client = client;
 		this.id = id;
 		this.date = date;

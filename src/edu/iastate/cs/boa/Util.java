@@ -35,8 +35,8 @@ final class Util {
 			strToInt((String)job.get("id")),
 			strToDate((String)job.get("submitted")),
 			parseDataset((Map<String, Object>)job.get("input")),
-			(String)job.get("compiler_status"),
-			(String)job.get("hadoop_status")
+			strToCompileStatus((String)job.get("compiler_status")),
+			strToExecutionStatus((String)job.get("hadoop_status"))
 		);
 	}
 
@@ -68,5 +68,29 @@ final class Util {
 		} catch (final NumberFormatException e) {
 			throw new BoaException("Invalid number '" + s + "' from server.", e);
 		}
+	}
+
+	private static CompileStatus strToCompileStatus(final String s) throws BoaException {
+		if ("Error".equals(s))
+			return CompileStatus.ERROR;
+		if ("Finished".equals(s))
+			return CompileStatus.FINISHED;
+		if ("Running".equals(s))
+			return CompileStatus.RUNNING;
+		if ("Waiting".equals(s))
+			return CompileStatus.WAITING;
+		throw new BoaException("Invalid response from server: compile_status '" + s + "' unknown");
+	}
+
+	private static ExecutionStatus strToExecutionStatus(final String s) throws BoaException {
+		if ("Error".equals(s))
+			return ExecutionStatus.ERROR;
+		if ("Finished".equals(s))
+			return ExecutionStatus.FINISHED;
+		if ("Running".equals(s))
+			return ExecutionStatus.RUNNING;
+		if ("Waiting".equals(s))
+			return ExecutionStatus.WAITING;
+		throw new BoaException("Invalid response from server: execution_status '" + s + "' unknown");
 	}
 }
