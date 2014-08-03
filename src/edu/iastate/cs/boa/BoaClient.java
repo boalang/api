@@ -81,6 +81,7 @@ public class BoaClient implements AutoCloseable {
 	protected static final String METHOD_BOA_JOB_PUBLIC_URL      = "boa.job.publicurl";
 	protected static final String METHOD_BOA_JOB_COMPILER_ERRORS = "boa.job.compilerErrors";
 	protected static final String METHOD_BOA_JOB_SOURCE          = "boa.job.source";
+	protected static final String METHOD_BOA_JOB_OUTPUT          = "boa.job.output";
 
 	protected final XmlRpcClient xmlRpcClient = new XmlRpcClient();
 	protected boolean loggedIn = false;
@@ -460,5 +461,19 @@ public class BoaClient implements AutoCloseable {
 		*/
 
 		throw new BoaException("The getSource() method is not yet implemented.");
+	}
+
+	String getOutput(final long id) throws BoaException, NotLoggedInException {
+		ensureLoggedIn();
+
+		/* TODO - implement on server side
+		try {
+			return xmlRpcClient.execute(METHOD_BOA_JOB_OUTPUT, new Object[] { "" + id });
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+		*/
+
+		throw new BoaException("The getOutput() method is not yet implemented.");
 	}
 }

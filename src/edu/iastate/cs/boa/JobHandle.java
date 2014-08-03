@@ -186,4 +186,15 @@ public final class JobHandle implements Serializable {
 	public String getSource() throws BoaException, NotLoggedInException {
 		return client.getSource(id);
 	}
+
+	/**
+	 * Return the output for this job, if it finished successfully and has output.
+	 *
+	 * @return the output for this job
+	 * @throws BoaException if the command fails for any reason
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public String getOutput() throws BoaException, NotLoggedInException {
+		return client.getOutput(id);
+	}
 }
