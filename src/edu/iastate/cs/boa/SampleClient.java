@@ -37,22 +37,39 @@ public class SampleClient {
 		client.login(args[0], args[1]);
 		System.out.println("logged in");
 
-		
+
 		// dump the list of available input datasets
 		for (final InputHandle d : client.getDatasets())
 			System.out.println(d);
 
 
+		// how many jobs do they have
+		System.out.println("number of jobs: " + client.getJobCount());
+
+
+		// show the oldest 10 jobs
+		for (final JobHandle j : client.getJobList(Math.max(10, client.getJobCount()) - 10, 10))
+			System.out.println(j);
+
 		// show the most recently submitted job
 		System.out.println("Last job: " + client.getLastJob());
 
-		
+
 		// create a new job by submitting a query and then do things with it
 		final JobHandle j = client.query("o: output sum of int;\no << 1;");
 		System.out.println("Submitted: " + j);
+		Thread.sleep(1000);
 
 		j.stop();
 		System.out.println("Stopped job: " + j);
+		Thread.sleep(1000);
+
+		j.resubmit();
+		System.out.println("Resubmitted job: " + j);
+		Thread.sleep(1000);
+
+		j.delete();
+		System.out.println("Deleted job: " + j);
 
 
 		// when finished, close the connection and log out of the remote server
