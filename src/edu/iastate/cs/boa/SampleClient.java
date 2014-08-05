@@ -58,6 +58,10 @@ public class SampleClient {
 		System.out.println("URL: " + lastJob.getUrl());
 		System.out.println("Public URL: " + lastJob.getPublicUrl());
 		System.out.println("Public? " + lastJob.getPublic());
+		System.out.println("Source");
+		System.out.println("---------------------");
+		System.out.println(lastJob.getSource());
+		System.out.println("---------------------");
 
 
 		// create a new job by submitting a query and then do things with it
