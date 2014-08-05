@@ -69,6 +69,7 @@ public class BoaClient implements AutoCloseable {
 	protected static final String METHOD_USER_LOGOUT = "user.logout";
 
 	protected static final String METHOD_BOA_DATASETS   = "boa.datasets";
+	protected static final String METHOD_BOA_JOB        = "boa.job";
 	protected static final String METHOD_BOA_JOBS       = "boa.jobs";
 	protected static final String METHOD_BOA_JOBS_COUNT = "boa.count";
 	protected static final String METHOD_BOA_JOBS_RANGE = "boa.range";
@@ -267,6 +268,24 @@ public class BoaClient implements AutoCloseable {
 				return h;
 
 		return null;
+	}
+
+	/**
+	 * Returns a specific job.
+	 *
+	 * @param id the jobs id
+	 * @return a {@link JobHandle} for the job
+	 * @throws BoaException if there was a problem reading from the server
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public JobHandle getJob(final int id) throws BoaException, NotLoggedInException {
+		ensureLoggedIn();
+
+		try {
+			return Util.parseJob(this, (Map<?, ?>)xmlRpcClient.execute(METHOD_BOA_JOB, new Object[] {id}));
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -492,29 +511,25 @@ public class BoaClient implements AutoCloseable {
 	URL getUrl(final long id) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
-		/* TODO - implement on server side
 		try {
-			return xmlRpcClient.execute(METHOD_JOB_URL, new Object[] { "" + id });
+			return new URL((String)xmlRpcClient.execute(METHOD_JOB_URL, new Object[] { "" + id }));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
+		} catch (final MalformedURLException e) {
+			throw new BoaException(e.getMessage(), e);
 		}
-		*/
-
-		throw new BoaException("The getUrl() method is not yet implemented.");
 	}
 
 	URL getPublicUrl(final long id) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
-		/* TODO - implement on server side
 		try {
-			return xmlRpcClient.execute(METHOD_JOB_PUBLIC_URL, new Object[] { "" + id });
+			return new URL((String)xmlRpcClient.execute(METHOD_JOB_PUBLIC_URL, new Object[] { "" + id }));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
+		} catch (final MalformedURLException e) {
+			throw new BoaException(e.getMessage(), e);
 		}
-		*/
-
-		throw new BoaException("The getPublicUrl() method is not yet implemented.");
 	}
 
 	List<String> getCompilerErrors(final long id) throws BoaException, NotLoggedInException {

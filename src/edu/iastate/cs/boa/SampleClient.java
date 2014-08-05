@@ -55,21 +55,17 @@ public class SampleClient {
 		// show the most recently submitted job
 		final JobHandle lastJob = client.getLastJob();
 		System.out.println("Last job: " + lastJob);
+		System.out.println("URL: " + lastJob.getUrl());
+		System.out.println("Public URL: " + lastJob.getPublicUrl());
 		System.out.println("Public? " + lastJob.getPublic());
 
 
 		// create a new job by submitting a query and then do things with it
 		final JobHandle j = client.query("o: output sum of int;\no << 1;");
 		System.out.println("Submitted: " + j);
-		Thread.sleep(1000);
 
 		j.stop();
 		System.out.println("Stopped job: " + j);
-		Thread.sleep(1000);
-
-		j.resubmit();
-		System.out.println("Resubmitted job: " + j);
-		Thread.sleep(1000);
 
 		j.delete();
 		System.out.println("Deleted job: " + j);

@@ -40,7 +40,7 @@ public final class JobHandle implements Serializable {
 	 */
 	public final int getId() { return id; }
 
-	private final Date date;
+	private Date date;
 	/**
 	 * Returns the {@link Date} the job was last submitted.
 	 *
@@ -56,7 +56,7 @@ public final class JobHandle implements Serializable {
 	 */
 	public final InputHandle getDataset() { return dataset; }
 
-	private final CompileStatus compilerStatus;
+	private CompileStatus compilerStatus;
 	/**
 	 * Returns the compiler status for the job.
 	 *
@@ -64,7 +64,7 @@ public final class JobHandle implements Serializable {
 	 */
 	public final CompileStatus getCompilerStatus() { return compilerStatus; }
 
-	private final ExecutionStatus execStatus;
+	private ExecutionStatus execStatus;
 	/**
 	 * Returns the execution status for the job.
 	 *
@@ -196,5 +196,19 @@ public final class JobHandle implements Serializable {
 	 */
 	public String getOutput() throws BoaException, NotLoggedInException {
 		return client.getOutput(id);
+	}
+
+	/**
+	 * Refreshes the cached data for this job.
+	 *
+	 * @throws BoaException if the command fails for any reason
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public void refresh() throws BoaException, NotLoggedInException {
+		final JobHandle j = client.getJob(id);
+
+		this.date = j.getDate();
+		this.compilerStatus = j.getCompilerStatus();
+		this.execStatus = j.getExecutionStatus();
 	}
 }
