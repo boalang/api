@@ -485,15 +485,11 @@ public class BoaClient implements AutoCloseable {
 	void setPublic(final long id, final boolean isPublic) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
-		/* TODO - implement on server side
 		try {
 			xmlRpcClient.execute(METHOD_JOB_SET_PUBLIC, new Object[] { "" + id, isPublic });
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
-		*/
-
-		throw new BoaException("The setPublic() method is not yet implemented.");
 	}
 
 	boolean getPublic(final long id) throws BoaException, NotLoggedInException {
@@ -535,15 +531,15 @@ public class BoaClient implements AutoCloseable {
 	List<String> getCompilerErrors(final long id) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
-		/* TODO - implement on server side
 		try {
-			return xmlRpcClient.execute(METHOD_JOB_COMPILER_ERRORS, new Object[] { "" + id });
+			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_JOB_COMPILER_ERRORS, new Object[] { "" + id });
+			final List<String> l = new ArrayList<String>();
+			for (final Object o : result)
+				l.add((String)o);
+			return l;
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
-		*/
-
-		throw new BoaException("The getCompilerErrors() method is not yet implemented.");
 	}
 
 	String getSource(final long id) throws BoaException, NotLoggedInException {
