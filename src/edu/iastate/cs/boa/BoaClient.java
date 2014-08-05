@@ -288,29 +288,19 @@ public class BoaClient implements AutoCloseable {
 
 	/**
 	 * Returns a list of the most recent jobs.  The number of jobs is limited based on the user's web setting.
+	 * This includes public and private jobs.
 	 *
 	 * @return a list of {@link JobHandle}s for the most recent jobs
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
 	public List<JobHandle> getJobList() throws BoaException, NotLoggedInException {
-		ensureLoggedIn();
-
-		try {
-			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_BOA_JOBS, new Object[] {});
-
-			final List<JobHandle> jobs = new ArrayList<JobHandle>();
-			for (int i = 0; i < result.length; i++)
-				jobs.add(Util.parseJob(this, (Map<?, ?>)result[i]));
-
-			return jobs;
-		} catch (final XmlRpcException e) {
-			throw new BoaException(e.getMessage(), e);
-		}
+		return getJobList(false);
 	}
 
 	/**
 	 * Returns a list of the most recent jobs, based on an offset and length.
+	 * This includes public and private jobs.
 	 *
 	 * @param offset the starting offset
 	 * @param length the number of jobs (at most) to return
@@ -319,10 +309,22 @@ public class BoaClient implements AutoCloseable {
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
 	public List<JobHandle> getJobList(final int offset, final int length) throws BoaException, NotLoggedInException {
+		return getJobList(false, offset, length);
+	}
+
+	/**
+	 * Returns a list of the most recent public (or all) jobs.  The number of jobs is limited based on the user's web setting.
+	 *
+	 * @param pub if true, only return public jobs otherwise return all jobs
+	 * @return a list of {@link JobHandle}s for the most recent jobs
+	 * @throws BoaException if there was a problem reading from the server
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public List<JobHandle> getJobList(final boolean pub) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
 		try {
-			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_BOA_JOBS_RANGE, new Object[] {offset, length});
+			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_BOA_JOBS, new Object[] {pub});
 
 			final List<JobHandle> jobs = new ArrayList<JobHandle>();
 			for (int i = 0; i < result.length; i++)
@@ -335,17 +337,55 @@ public class BoaClient implements AutoCloseable {
 	}
 
 	/**
-	 * Returns the number of jobs for the user.
+	 * Returns a list of the most recent public (or all) jobs, based on an offset and length.
+	 *
+	 * @param pub if true, only return public jobs otherwise return all jobs
+	 * @param offset the starting offset
+	 * @param length the number of jobs (at most) to return
+	 * @return a list of {@link JobHandle}s for the jobs starting at the offset and containing at most length jobs
+	 * @throws BoaException if there was a problem reading from the server
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public List<JobHandle> getJobList(final boolean pub, final int offset, final int length) throws BoaException, NotLoggedInException {
+		ensureLoggedIn();
+
+		try {
+			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_BOA_JOBS_RANGE, new Object[] {pub, offset, length});
+
+			final List<JobHandle> jobs = new ArrayList<JobHandle>();
+			for (int i = 0; i < result.length; i++)
+				jobs.add(Util.parseJob(this, (Map<?, ?>)result[i]));
+
+			return jobs;
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Returns the number of jobs for the user.  This includes public and private jobs.
 	 *
 	 * @return the number of jobs the user has created
 	 * @throws BoaException if there was a problem reading from the server
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
 	public int getJobCount() throws BoaException, NotLoggedInException {
+		return getJobCount(false);
+	}
+
+	/**
+	 * Returns the number of public (or all) jobs for the user.
+	 *
+	 * @param pub if true, return count of only public jobs otherwise return count of all jobs
+	 * @return the number of jobs the user has created, possibly filtered to public only jobs
+	 * @throws BoaException if there was a problem reading from the server
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public int getJobCount(final boolean pub) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
 		try {
-			return Integer.parseInt((String)xmlRpcClient.execute(METHOD_BOA_JOBS_COUNT, new Object[] {}));
+			return Integer.parseInt((String)xmlRpcClient.execute(METHOD_BOA_JOBS_COUNT, new Object[] {pub}));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -440,15 +480,13 @@ public class BoaClient implements AutoCloseable {
 	boolean getPublic(final long id) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
-		/* TODO - implement on server side
 		try {
-			return xmlRpcClient.execute(METHOD_JOB_PUBLIC, new Object[] { "" + id });
+			if (Integer.parseInt((String)xmlRpcClient.execute(METHOD_JOB_PUBLIC, new Object[] { "" + id })) > 0)
+				return true;
+			return false;
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
-		*/
-
-		throw new BoaException("The getPublic() method is not yet implemented.");
 	}
 
 	URL getUrl(final long id) throws BoaException, NotLoggedInException {

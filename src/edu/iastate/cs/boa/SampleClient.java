@@ -45,6 +45,7 @@ public class SampleClient {
 
 		// how many jobs do they have
 		System.out.println("number of jobs: " + client.getJobCount());
+		System.out.println("number of public jobs: " + client.getJobCount(true));
 
 
 		// show the oldest 10 jobs
@@ -52,7 +53,9 @@ public class SampleClient {
 			System.out.println(j);
 
 		// show the most recently submitted job
-		System.out.println("Last job: " + client.getLastJob());
+		final JobHandle lastJob = client.getLastJob();
+		System.out.println("Last job: " + lastJob);
+		System.out.println("Public? " + lastJob.getPublic());
 
 
 		// create a new job by submitting a query and then do things with it
