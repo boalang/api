@@ -555,14 +555,10 @@ public class BoaClient implements AutoCloseable {
 	String getOutput(final long id) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
-		/* TODO - implement on server side
 		try {
-			return xmlRpcClient.execute(METHOD_JOB_OUTPUT, new Object[] { "" + id });
+			return (String)xmlRpcClient.execute(METHOD_JOB_OUTPUT, new Object[] { "" + id });
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
-		*/
-
-		throw new BoaException("The getOutput() method is not yet implemented.");
 	}
 }
