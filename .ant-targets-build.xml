@@ -5,3 +5,4 @@ clean-src
 compile
 gen-docs
 package
+release
