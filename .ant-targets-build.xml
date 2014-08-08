@@ -1,0 +1,7 @@
+clean
+clean-dist
+clean-docs
+clean-src
+compile
+gen-docs
+package
