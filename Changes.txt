@@ -1,0 +1,3 @@
+0.1.0 - Friday 8 August 2014
+
+	* Initial release of the Boa client API for Java
