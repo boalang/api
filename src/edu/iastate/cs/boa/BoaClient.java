@@ -298,7 +298,7 @@ public class BoaClient implements AutoCloseable {
 	public JobHandle getLastJob() throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
-		final List<JobHandle> jobs = getJobList();
+		final List<JobHandle> jobs = getJobList(0, 1);
 		if (jobs.isEmpty())
 			return null;
 
