@@ -53,24 +53,26 @@ public class SampleClient {
 			System.out.println(j);
 
 		// show the most recently submitted job
-		final JobHandle lastJob = client.getLastJob();
-		System.out.println("Last job: " + lastJob);
-		System.out.println("URL: " + lastJob.getUrl());
-		System.out.println("Public URL: " + lastJob.getPublicUrl());
-		System.out.println("Public? " + lastJob.getPublic());
-		lastJob.setPublic(!lastJob.getPublic());
-		System.out.println("Public? " + lastJob.getPublic());
-		lastJob.setPublic(!lastJob.getPublic());
-		System.out.println("Source:");
-		System.out.println("---------------------");
-		System.out.println(lastJob.getSource());
-		System.out.println("---------------------");
-		for (final String err : lastJob.getCompilerErrors())
-			System.out.println("Compile error: " + err);
-		System.out.println("Output:");
-		System.out.println("---------------------");
-		System.out.println(lastJob.getOutput());
-		System.out.println("---------------------");
+		if (client.getJobCount() > 0) {
+			final JobHandle lastJob = client.getLastJob();
+			System.out.println("Last job: " + lastJob);
+			System.out.println("URL: " + lastJob.getUrl());
+			System.out.println("Public URL: " + lastJob.getPublicUrl());
+			System.out.println("Public? " + lastJob.getPublic());
+			lastJob.setPublic(!lastJob.getPublic());
+			System.out.println("Public? " + lastJob.getPublic());
+			lastJob.setPublic(!lastJob.getPublic());
+			System.out.println("Source:");
+			System.out.println("---------------------");
+			System.out.println(lastJob.getSource());
+			System.out.println("---------------------");
+			for (final String err : lastJob.getCompilerErrors())
+				System.out.println("Compile error: " + err);
+			System.out.println("Output:");
+			System.out.println("---------------------");
+			System.out.println(lastJob.getOutput());
+			System.out.println("---------------------");
+		}
 
 
 		// create a new job by submitting a query and then do things with it
