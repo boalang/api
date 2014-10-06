@@ -65,8 +65,11 @@ public class BoaClient implements AutoCloseable {
 	private static final String BOA_DOMAIN = "boa.cs.iastate.edu";
 	private static final String BOA_PATH   = "/boa/?q=boa/api";
 
+	protected static final String METHOD_SYSTEM_CONNECT = "system.connect";
+
 	protected static final String METHOD_USER_LOGIN  = "user.login";
 	protected static final String METHOD_USER_LOGOUT = "user.logout";
+	protected static final String METHOD_USER_TOKEN  = "user.token";
 
 	protected static final String METHOD_BOA_DATASETS   = "boa.datasets";
 	protected static final String METHOD_BOA_JOB        = "boa.job";
@@ -132,6 +135,9 @@ public class BoaClient implements AutoCloseable {
 	 * @throws LoginException if the login failed for any reason
 	 */
 	public void login(final String username, final String password) throws LoginException {
+		if (loggedIn)
+			return;
+
 		loggedIn = false;
 
 		try {
@@ -153,8 +159,48 @@ public class BoaClient implements AutoCloseable {
 					};
 				}
 			});
+		} catch (final XmlRpcHttpTransportException e) {
+			throw new LoginException("Invalid path given to Boa API.", e);
+		} catch (final XmlRpcException e) {
+			if (e.getMessage().indexOf("Already logged in as ") == 0) {
+				System.err.println("CONNECT");
+				connect(username, password);
+			} else {
+				if (e.getMessage().indexOf("username") != -1)
+					throw new LoginException("Invalid username or password.", e);
+				if (e.getMessage().indexOf("response") != -1)
+					throw new LoginException("Invalid domain given to Boa API.", e);
+				if (e.getMessage().indexOf(":") != -1)
+					throw new LoginException(e.getMessage().substring(e.getMessage().indexOf(":") + 2), e);
+				throw new LoginException(e.getMessage(), e);
+			}
+		}
 
-			loggedIn = true;
+		loggedIn = true;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void connect(final String username, final String password) throws LoginException {
+		try {
+			Map<String, String> response = (Map<String, String>) xmlRpcClient.execute(METHOD_SYSTEM_CONNECT, new String[] { username, password });
+			final String cookie = response.get("session_name") + "=" + response.get("sessid");
+
+			response = (Map<String, String>) xmlRpcClient.execute(METHOD_USER_TOKEN, new Object[] {});
+			final String token = (String)response.get("token");
+
+			// construct a custom transport that sets the session cookie and CSRF token
+			xmlRpcClient.setTransportFactory(new XmlRpcSunHttpTransportFactory(xmlRpcClient) {
+				public XmlRpcTransport getTransport() {
+					return new XmlRpcSunHttpTransport(xmlRpcClient) {
+						@Override
+						protected void initHttpHeaders(final XmlRpcRequest request) throws XmlRpcClientException {
+							super.initHttpHeaders(request);
+							setRequestHeader("Cookie", cookie);
+							setRequestHeader("X-CSRF-Token", token);
+						}
+					};
+				}
+			});
 		} catch (final XmlRpcHttpTransportException e) {
 			throw new LoginException("Invalid path given to Boa API.", e);
 		} catch (final XmlRpcException e) {
