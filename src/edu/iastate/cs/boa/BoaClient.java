@@ -223,7 +223,8 @@ public class BoaClient implements AutoCloseable {
 		try {
 			xmlRpcClient.execute(METHOD_USER_LOGOUT, new Object[] {});
 		} catch (final XmlRpcException e) {
-			throw new BoaException(e.getMessage(), e);
+			if (!"User is not logged in.".equals(e.getMessage()))
+				throw new BoaException(e.getMessage(), e);
 		}
 	}
 
