@@ -163,7 +163,6 @@ public class BoaClient implements AutoCloseable {
 			throw new LoginException("Invalid path given to Boa API.", e);
 		} catch (final XmlRpcException e) {
 			if (e.getMessage().indexOf("Already logged in as ") == 0) {
-				System.err.println("CONNECT");
 				connect(username, password);
 			} else {
 				if (e.getMessage().indexOf("username") != -1)
