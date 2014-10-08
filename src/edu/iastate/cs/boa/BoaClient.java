@@ -543,9 +543,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			if (Integer.parseInt((String)xmlRpcClient.execute(METHOD_JOB_PUBLIC, new Object[] { "" + id })) > 0)
-				return true;
-			return false;
+			return (Integer)xmlRpcClient.execute(METHOD_JOB_PUBLIC, new Object[] { "" + id }) == 1;
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
