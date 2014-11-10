@@ -1,0 +1,4 @@
+D:\Users\Jesse\Documents\Visual Studio 2013\Projects\edu.iastate.cs.boa\edu.iastate.cs.boa\bin\Debug\edu.iastate.cs.boa.dll
+D:\Users\Jesse\Documents\Visual Studio 2013\Projects\edu.iastate.cs.boa\edu.iastate.cs.boa\bin\Debug\edu.iastate.cs.boa.pdb
+D:\Users\Jesse\Documents\Visual Studio 2013\Projects\edu.iastate.cs.boa\edu.iastate.cs.boa\obj\Debug\edu.iastate.cs.boa.dll
+D:\Users\Jesse\Documents\Visual Studio 2013\Projects\edu.iastate.cs.boa\edu.iastate.cs.boa\obj\Debug\edu.iastate.cs.boa.pdb
