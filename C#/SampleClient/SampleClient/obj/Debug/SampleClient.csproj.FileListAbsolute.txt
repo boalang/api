@@ -1,0 +1,9 @@
+D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\SampleClient\SampleClient\bin\Debug\SampleClient.exe.config
+D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\SampleClient\SampleClient\bin\Debug\SampleClient.exe
+D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\SampleClient\SampleClient\bin\Debug\SampleClient.pdb
+D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\SampleClient\SampleClient\bin\Debug\edu.iastate.cs.boa.dll
+D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\SampleClient\SampleClient\bin\Debug\CookComputing.XmlRpcV2.dll
+D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\SampleClient\SampleClient\bin\Debug\edu.iastate.cs.boa.pdb
+D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\SampleClient\SampleClient\obj\Debug\SampleClient.csprojResolveAssemblyReference.cache
+D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\SampleClient\SampleClient\obj\Debug\SampleClient.exe
+D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\SampleClient\SampleClient\obj\Debug\SampleClient.pdb
