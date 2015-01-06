@@ -1,5 +1,0 @@
-D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\edu.iastate.cs.boa\edu.iastate.cs.boa\bin\Debug\edu.iastate.cs.boa.dll
-D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\edu.iastate.cs.boa\edu.iastate.cs.boa\bin\Debug\edu.iastate.cs.boa.pdb
-D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\edu.iastate.cs.boa\edu.iastate.cs.boa\bin\Debug\CookComputing.XmlRpcV2.dll
-D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\edu.iastate.cs.boa\edu.iastate.cs.boa\obj\Debug\edu.iastate.cs.boa.dll
-D:\Users\Jesse\Documents\Independent Study Work\api_java_and_cs\C#\edu.iastate.cs.boa\edu.iastate.cs.boa\obj\Debug\edu.iastate.cs.boa.pdb

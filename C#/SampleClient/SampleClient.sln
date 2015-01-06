@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleClient", "SampleClien
 		{DF90200F-1CE6-41D5-982B-F36217FD9ED9} = {DF90200F-1CE6-41D5-982B-F36217FD9ED9}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "edu.iastate.cs.boa", "..\edu.iastate.cs.boa\edu.iastate.cs.boa\edu.iastate.cs.boa.csproj", "{DF90200F-1CE6-41D5-982B-F36217FD9ED9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "edu.iastate.cs.boa", "SampleClient\edu.iastate.cs.boa\edu.iastate.cs.boa\edu.iastate.cs.boa.csproj", "{DF90200F-1CE6-41D5-982B-F36217FD9ED9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
