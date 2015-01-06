@@ -2,4 +2,8 @@ bin/
 obj/
 bin/**
 obj/**
+bin/Debug
+obj/Debug
+bin/Debug/**
+obj/Debug/**
 *.suo
