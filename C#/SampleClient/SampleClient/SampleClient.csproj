@@ -33,7 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="edu.iastate.cs.boa">
-      <HintPath>edu.iastate.cs.boa\edu.iastate.cs.boa\bin\Debug\edu.iastate.cs.boa.dll</HintPath>
+      <HintPath>..\edu.iastate.cs.boa\edu.iastate.cs.boa\bin\Debug\edu.iastate.cs.boa.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
