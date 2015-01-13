@@ -81,9 +81,9 @@
 
 	<target name="release" depends="package" description="Generate a release ZIP-file.">
 		<zip destfile="boa-client-${release.version}.zip">
-			<zipfileset dir="." includes="README.md" />
-			<zipfileset dir="." includes="Changes.txt" />
-			<zipfileset dir="." includes="LICENSE" />
+			<zipfileset dir=".." includes="README.md" />
+			<zipfileset dir=".." includes="Changes.txt" />
+			<zipfileset dir=".." includes="LICENSE" />
 			<zipfileset dir="dist" includes="boa-client.jar" fullpath="boa-client-${release.version}.jar" />
 		</zip>
 	</target>
