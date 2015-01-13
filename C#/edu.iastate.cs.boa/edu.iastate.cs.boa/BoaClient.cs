@@ -77,7 +77,7 @@ namespace edu.iastate.cs.boa
 
 
 
-    public class BoaClient
+	public class BoaClient : IDisposable
     {
         private static readonly String BOA_DOMAIN = "boa.cs.iastate.edu";
 	    private static readonly String BOA_PATH   = "/boa/?q=boa/api";
@@ -120,6 +120,14 @@ namespace edu.iastate.cs.boa
             */
             xmlRpcClient.Url = "http://" + domain + path;
         }
+
+		~BoaClient () {
+			try {
+				close();
+			} catch (Exception) {
+				// ignore
+			}
+		}
 
         public BoaClient(String domain, String path)
         {
@@ -202,12 +210,22 @@ namespace edu.iastate.cs.boa
             }
         }
 
-        public void close()
+		private bool disposed = false;
+
+		public void Dispose() {
+			if (!disposed) {
+				disposed = true;
+				close ();
+			}
+		}
+
+		public void close()
         {
             resetDataSetCache();
             try
             {
-                bool ret = xmlRpcClient.logoutRequest();
+				loggedIn = false;
+                xmlRpcClient.logoutRequest();
             }
             catch(XmlRpcFaultException e)
             {
@@ -223,7 +241,7 @@ namespace edu.iastate.cs.boa
 	     */
         public void ensureLoogedIn()
         {
-            if(!loggedIn)
+            if (!loggedIn)
             {
                 throw new NotLoggedInException();
             }
