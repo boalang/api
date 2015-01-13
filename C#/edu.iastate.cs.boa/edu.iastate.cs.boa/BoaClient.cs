@@ -216,6 +216,7 @@ namespace edu.iastate.cs.boa
 			if (!disposed) {
 				disposed = true;
 				close ();
+				GC.SuppressFinalize(this);
 			}
 		}
 
