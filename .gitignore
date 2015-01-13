@@ -1,6 +1,6 @@
-dist/
 **/bin/
 **/obj/
 **/bin/**
 **/obj/**
-*.suo
+**/*.suo
+**/*.userprefs
