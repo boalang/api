@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<project name="boa-api" default="release">
+	<!-- the current release version -->
+	<property name="release.version" value="0.1.0" />
+
+	<!-- packaging -->
+	<target name="release" description="Generate a release ZIP-file.">
+		<zip destfile="boa-clientCSharp-${release.version}.zip">
+			<zipfileset dir=".." includes="README.md" />
+			<zipfileset dir=".." includes="Changes.txt" />
+			<zipfileset dir=".." includes="LICENSE" />
+			<zipfileset dir="SampleClient/bin/Release" includes="CookComputing.XmlRpcV2.dll" />
+			<zipfileset dir="SampleClient/bin/Release" includes="SampleClient.exe" />
+			<zipfileset dir="SampleClient/bin/Release" includes="SampleClient.exe.config" />
+			<zipfileset dir="SampleClient/bin/Release" includes="SampleClient.exe.mdb" />
+			<zipfileset dir="SampleClient/bin/Release" includes="edu.iastate.cs.boa.dll" />
+			<zipfileset dir="SampleClient/bin/Release" includes="edu.iastate.cs.boa.dll.mdb" />
+		</zip>
+	</target>
+
+
+	<!-- project cleanup -->
+	<target name="clean" description="Clean all generated/compiled files.">
+		<delete file="boa-clientCSharp-${release.version}.zip" />
+		<delete dir="SampleClient/bin/" />
+		<delete dir="SampleClient/obj/" />
+		<delete dir="edu.iastate.cs.boa/bin/" />
+		<delete dir="edu.iastate.cs.boa/obj/" />
+	</target>
+</project>
