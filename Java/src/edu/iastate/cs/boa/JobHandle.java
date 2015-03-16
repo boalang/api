@@ -199,6 +199,19 @@ public final class JobHandle implements Serializable {
 	}
 
 	/**
+	 * Return a subset of the output for this job, if it finished successfully and has output.
+	 *
+	 * @param start the starting offset
+	 * @param len the length of the output
+	 * @return the output for this job
+	 * @throws BoaException if the command fails for any reason
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public String getOutput(final long start, final long len) throws BoaException, NotLoggedInException {
+		return client.getOutput(id, start, len);
+	}
+
+	/**
 	 * Refreshes the cached data for this job.
 	 *
 	 * @throws BoaException if the command fails for any reason
