@@ -16,10 +16,15 @@
  */
 package edu.iastate.cs.boa;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents a handle to a job.  Can not be created, only returned
@@ -195,7 +200,46 @@ public final class JobHandle implements Serializable {
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
 	public String getOutput() throws BoaException, NotLoggedInException {
-		return client.getOutput(id);
+		final File f = new File(UUID.randomUUID().toString());
+		this.getOutput(f);
+
+		StringBuffer sb = new StringBuffer();
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(f));
+
+			char[] buf = new char[4096];
+			int len = 0;
+			while ((len = br.read(buf, 0, 4096)) > 0) {
+				sb.append(buf, 0, len);
+			}
+		} catch (final IOException e) {
+			// ignore
+		} finally {
+			try {
+				if (br != null)
+					br.close();
+			} catch (final IOException e) {
+				// ignore
+			}
+		}
+
+		try {
+			f.delete();
+		} catch (final Exception e) { }
+
+		return sb.toString();
+	}
+
+	/**
+	 * Return the output for this job, if it finished successfully and has output.
+	 *
+	 * @param f where to store the file
+	 * @throws BoaException if the command fails for any reason
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	void getOutput(final File f) throws BoaException, NotLoggedInException {
+		client.getOutput(id, f);
 	}
 
 	/**

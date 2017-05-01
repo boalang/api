@@ -16,11 +16,22 @@
  */
 package edu.iastate.cs.boa;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
@@ -128,6 +139,18 @@ public class BoaClient implements AutoCloseable {
 		xmlRpcClient.setConfig(config);
 	}
 
+    private Object execute(final Class c, final String cmd, final Object[] args) throws BoaException, XmlRpcException  {
+        final Object ret = execute(cmd, args);
+        if (!c.isInstance(ret)) {
+            throw new BoaException("unexpected/missing/invalid API result value '" + ret.toString() + "'");
+        }
+        return ret;
+    }
+
+    private Object execute(final String cmd, final Object[] args) throws XmlRpcException  {
+        return xmlRpcClient.execute(cmd, args);
+    }
+
 	/**
 	 * Method to log into the remote API.
 	 *
@@ -143,7 +166,7 @@ public class BoaClient implements AutoCloseable {
 
 		try {
 			@SuppressWarnings("unchecked")
-			final Map<String, String> response = (Map<String, String>) xmlRpcClient.execute(METHOD_USER_LOGIN, new String[] { username, password });
+			final Map<String, String> response = (Map<String, String>)execute(Map.class, METHOD_USER_LOGIN, new String[] { username, password });
 
 			// construct a custom transport that sets the session cookie and CSRF token
 			final String cookie = response.get("session_name") + "=" + response.get("sessid");
@@ -160,6 +183,8 @@ public class BoaClient implements AutoCloseable {
 					};
 				}
 			});
+        } catch (final BoaException e) {
+            throw new LoginException(e.getMessage(), e);
 		} catch (final XmlRpcHttpTransportException e) {
 			throw new LoginException("Invalid path given to Boa API.", e);
 		} catch (final XmlRpcException e) {
@@ -182,10 +207,10 @@ public class BoaClient implements AutoCloseable {
 	@SuppressWarnings("unchecked")
 	protected void connect(final String username, final String password) throws LoginException {
 		try {
-			Map<String, String> response = (Map<String, String>) xmlRpcClient.execute(METHOD_SYSTEM_CONNECT, new String[] { username, password });
+			Map<String, String> response = (Map<String, String>)execute(Map.class, METHOD_SYSTEM_CONNECT, new String[] { username, password });
 			final String cookie = response.get("session_name") + "=" + response.get("sessid");
 
-			response = (Map<String, String>) xmlRpcClient.execute(METHOD_USER_TOKEN, new Object[] {});
+			response = (Map<String, String>)execute(Map.class, METHOD_USER_TOKEN, new Object[] {});
 			final String token = (String)response.get("token");
 
 			// construct a custom transport that sets the session cookie and CSRF token
@@ -201,6 +226,8 @@ public class BoaClient implements AutoCloseable {
 					};
 				}
 			});
+        } catch (final BoaException e) {
+            throw new LoginException(e.getMessage(), e);
 		} catch (final XmlRpcHttpTransportException e) {
 			throw new LoginException("Invalid path given to Boa API.", e);
 		} catch (final XmlRpcException e) {
@@ -223,7 +250,7 @@ public class BoaClient implements AutoCloseable {
 		resetDatasetCache();
 		try {
 			loggedIn = false;
-			xmlRpcClient.execute(METHOD_USER_LOGOUT, new Object[] {});
+			execute(METHOD_USER_LOGOUT, new Object[] {});
 		} catch (final XmlRpcException e) {
 			if (!"User is not logged in.".equals(e.getMessage()))
 				throw new BoaException(e.getMessage(), e);
@@ -268,7 +295,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			final Object[] result = (Object[]) xmlRpcClient.execute(METHOD_BOA_DATASETS, new Object[] {});
+			final Object[] result = (Object[])execute(METHOD_BOA_DATASETS, new Object[] {});
 
 			datasetCache = new ArrayList<InputHandle>();
 			for (int i = 0; i < result.length; i++)
@@ -330,7 +357,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			return Util.parseJob(this, (Map<?, ?>)xmlRpcClient.execute(METHOD_BOA_JOB, new Object[] {id}));
+			return Util.parseJob(this, (Map<?, ?>)execute(Map.class, METHOD_BOA_JOB, new Object[] {id}));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -392,7 +419,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_BOA_JOBS, new Object[] {pubOnly});
+			final Object[] result = (Object[])execute(METHOD_BOA_JOBS, new Object[] {pubOnly});
 
 			final List<JobHandle> jobs = new ArrayList<JobHandle>();
 			for (int i = 0; i < result.length; i++)
@@ -418,7 +445,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_BOA_JOBS_RANGE, new Object[] {pubOnly, offset, length});
+			final Object[] result = (Object[])execute(METHOD_BOA_JOBS_RANGE, new Object[] {pubOnly, offset, length});
 
 			final List<JobHandle> jobs = new ArrayList<JobHandle>();
 			for (int i = 0; i < result.length; i++)
@@ -453,7 +480,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			return Integer.parseInt((String)xmlRpcClient.execute(METHOD_BOA_JOBS_COUNT, new Object[] {pubOnly}));
+			return Integer.parseInt((String)execute(String.class, METHOD_BOA_JOBS_COUNT, new Object[] {pubOnly}));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -472,7 +499,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			return Util.parseJob(this, (Map<?, ?>)xmlRpcClient.execute(METHOD_BOA_SUBMIT, new Object[] { query, dataset.getId() }));
+			return Util.parseJob(this, (Map<?, ?>)execute(Map.class, METHOD_BOA_SUBMIT, new Object[] { query, dataset.getId() }));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -490,7 +517,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			return Util.parseJob(this, (Map<?, ?>)xmlRpcClient.execute(METHOD_BOA_SUBMIT, new Object[] { query, getDatasets().get(0).getId() }));
+			return Util.parseJob(this, (Map<?, ?>)execute(Map.class, METHOD_BOA_SUBMIT, new Object[] { query, getDatasets().get(0).getId() }));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -505,7 +532,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			xmlRpcClient.execute(METHOD_JOB_STOP, new Object[] { "" + id });
+			execute(METHOD_JOB_STOP, new Object[] { "" + id });
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -515,7 +542,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			xmlRpcClient.execute(METHOD_JOB_RESUBMIT, new Object[] { "" + id });
+			execute(METHOD_JOB_RESUBMIT, new Object[] { "" + id });
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -525,7 +552,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			xmlRpcClient.execute(METHOD_JOB_DELETE, new Object[] { "" + id });
+			execute(METHOD_JOB_DELETE, new Object[] { "" + id });
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -535,7 +562,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			xmlRpcClient.execute(METHOD_JOB_SET_PUBLIC, new Object[] { "" + id, isPublic });
+			execute(METHOD_JOB_SET_PUBLIC, new Object[] { "" + id, isPublic });
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -545,7 +572,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			return (Integer)xmlRpcClient.execute(METHOD_JOB_PUBLIC, new Object[] { "" + id }) == 1;
+			return (Integer)execute(Integer.class, METHOD_JOB_PUBLIC, new Object[] { "" + id }) == 1;
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -555,7 +582,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			return new URL((String)xmlRpcClient.execute(METHOD_JOB_URL, new Object[] { "" + id }));
+			return new URL((String)execute(String.class, METHOD_JOB_URL, new Object[] { "" + id }));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		} catch (final MalformedURLException e) {
@@ -567,7 +594,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			return new URL((String)xmlRpcClient.execute(METHOD_JOB_PUBLIC_URL, new Object[] { "" + id }));
+			return new URL((String)execute(String.class, METHOD_JOB_PUBLIC_URL, new Object[] { "" + id }));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		} catch (final MalformedURLException e) {
@@ -579,7 +606,7 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			final Object[] result = (Object[])xmlRpcClient.execute(METHOD_JOB_COMPILER_ERRORS, new Object[] { "" + id });
+			final Object[] result = (Object[])execute(METHOD_JOB_COMPILER_ERRORS, new Object[] { "" + id });
 			final List<String> l = new ArrayList<String>();
 			for (final Object o : result)
 				l.add((String)o);
@@ -593,17 +620,58 @@ public class BoaClient implements AutoCloseable {
 		ensureLoggedIn();
 
 		try {
-			return (String)xmlRpcClient.execute(METHOD_JOB_SOURCE, new Object[] { "" + id });
+			return (String)execute(String.class, METHOD_JOB_SOURCE, new Object[] { "" + id });
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
 	}
 
-	String getOutput(final long id) throws BoaException, NotLoggedInException {
+	void getOutput(final long id, final File f) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
 		try {
-			return (String)xmlRpcClient.execute(METHOD_JOB_OUTPUT, new Object[] { "" + id });
+			final String url = (String)execute(String.class, METHOD_JOB_OUTPUT, new Object[] { "" + id });
+
+			InputStream inStr = null;
+			BufferedWriter writer = null;
+			try {
+				final HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+				HttpURLConnection.setFollowRedirects(true);
+				conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+                conn.connect();
+
+                inStr = conn.getInputStream();
+				final String encoding = conn.getContentEncoding();
+				if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
+					inStr = new GZIPInputStream(inStr);
+				} else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
+					inStr = new InflaterInputStream(inStr, new Inflater(true));
+				}
+
+				final BufferedReader br = new BufferedReader(new InputStreamReader(inStr));
+				writer = new BufferedWriter(new FileWriter(f));
+
+				char[] buf = new char[4096];
+				int cnt;
+				while ((cnt = br.read(buf, 0, 4096)) > 0) {
+					writer.write(buf, 0, cnt);
+				}
+			} catch (final IOException e) {
+                throw new BoaException(e.getMessage(), e);
+			} finally {
+				try {
+					if (inStr != null)
+						inStr.close();
+				} catch (final IOException e) {
+					// ignore
+				}
+				try {
+					if (writer != null)
+						writer.close();
+				} catch (final IOException e) {
+					// ignore
+				}
+			}
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
@@ -612,8 +680,50 @@ public class BoaClient implements AutoCloseable {
 	String getOutput(final long id, final long start, final long len) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
+        final StringBuffer sb = new StringBuffer();
+
 		try {
-			return (String)xmlRpcClient.execute(METHOD_JOB_PAGED_OUTPUT, new Object[] { "" + id, "" + start, "" + len });
+			final String url = (String)execute(String.class, METHOD_JOB_OUTPUT, new Object[] { "" + id });
+
+			InputStream inStr = null;
+			try {
+				final HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+				HttpURLConnection.setFollowRedirects(true);
+                // FIXME investigate why enabling zip encoding breaks Range requests
+				//conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+                if (len < 1)
+                    conn.setRequestProperty("Range", "bytes=" + start + "-");
+                else
+                    conn.setRequestProperty("Range", "bytes=" + start + "-" + (start + len - 1));
+                conn.connect();
+
+                inStr = conn.getInputStream();
+				final String encoding = conn.getContentEncoding();
+				if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
+					inStr = new GZIPInputStream(inStr);
+				} else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
+					inStr = new InflaterInputStream(inStr, new Inflater(true));
+				}
+
+				final BufferedReader br = new BufferedReader(new InputStreamReader(inStr));
+
+				char[] buf = new char[4096];
+				int cnt;
+				while ((cnt = br.read(buf, 0, 4096)) > 0) {
+					sb.append(buf, 0, cnt);
+				}
+
+                return sb.toString();
+			} catch (final IOException e) {
+                throw new BoaException(e.getMessage(), e);
+			} finally {
+				try {
+					if (inStr != null)
+						inStr.close();
+				} catch (final IOException e) {
+					// ignore
+				}
+			}
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
