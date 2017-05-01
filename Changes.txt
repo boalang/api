@@ -1,3 +1,14 @@
+0.2.0 - Monday 1 May 2017
+    * job output is now placed into a file on the webserver for download,
+      simplifying the client API quite a bit and allowing better memory
+      handling
+    * added new job.getOutput(File) API that downloads the whole job output
+      into a given file
+    * updated job.getOutput() to use the new job.getOutput(File), with a
+      temporary file that is deleted after reading into a string
+    * updated job.getOutput(int, int) to do a Range HTTP request on the job
+      output
+
 0.1.0 - Friday 8 August 2014
 
-	* Initial release of the Boa client API for Java
+    * Initial release of the Boa client API for Java
