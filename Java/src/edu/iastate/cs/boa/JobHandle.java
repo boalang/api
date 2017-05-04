@@ -232,13 +232,14 @@ public final class JobHandle implements Serializable {
 	}
 
 	/**
-	 * Return the output for this job, if it finished successfully and has output.
+     * Store the output for this job into a {@link java.io.File}, if it
+     * finished successfully and has output.
 	 *
 	 * @param f where to store the file
 	 * @throws BoaException if the command fails for any reason
 	 * @throws NotLoggedInException if not already logged in to the API
 	 */
-	void getOutput(final File f) throws BoaException, NotLoggedInException {
+	public void getOutput(final File f) throws BoaException, NotLoggedInException {
 		client.getOutput(id, f);
 	}
 
@@ -253,6 +254,17 @@ public final class JobHandle implements Serializable {
 	 */
 	public String getOutput(final long start, final long len) throws BoaException, NotLoggedInException {
 		return client.getOutput(id, start, len);
+	}
+
+	/**
+	 * Return size of the output for this job, if it finished successfully and has output.
+	 *
+	 * @return the size of the output for this job
+	 * @throws BoaException if the command fails for any reason
+	 * @throws NotLoggedInException if not already logged in to the API
+	 */
+	public int getOutputSize() throws BoaException, NotLoggedInException {
+		return client.getOutputSize(id);
 	}
 
 	/**

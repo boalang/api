@@ -68,7 +68,8 @@ public class SampleClient {
 			System.out.println("---------------------");
 			for (final String err : lastJob.getCompilerErrors())
 				System.out.println("Compile error: " + err);
-			System.out.println("Output:");
+            int size = lastJob.getOutputSize();
+			System.out.println("Output (" + size + " bytes):");
 			System.out.println("---------------------");
 			System.out.println(lastJob.getOutput());
 			System.out.println("---------------------");

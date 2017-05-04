@@ -99,6 +99,7 @@ public class BoaClient implements AutoCloseable {
 	protected static final String METHOD_JOB_COMPILER_ERRORS = "job.compilerErrors";
 	protected static final String METHOD_JOB_SOURCE          = "job.source";
 	protected static final String METHOD_JOB_OUTPUT          = "job.output";
+	protected static final String METHOD_JOB_OUTPUT_SIZE     = "job.outputsize";
 	protected static final String METHOD_JOB_PAGED_OUTPUT    = "job.pagedoutput";
 
 	protected final XmlRpcClient xmlRpcClient = new XmlRpcClient();
@@ -724,6 +725,16 @@ public class BoaClient implements AutoCloseable {
 					// ignore
 				}
 			}
+		} catch (final XmlRpcException e) {
+			throw new BoaException(e.getMessage(), e);
+		}
+	}
+
+	int getOutputSize(final long id) throws BoaException, NotLoggedInException {
+		ensureLoggedIn();
+
+		try {
+			return Integer.parseInt((String)execute(String.class, METHOD_JOB_OUTPUT_SIZE, new Object[] { "" + id }));
 		} catch (final XmlRpcException e) {
 			throw new BoaException(e.getMessage(), e);
 		}
