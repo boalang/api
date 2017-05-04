@@ -657,6 +657,8 @@ public class BoaClient implements AutoCloseable {
 				while ((cnt = br.read(buf, 0, 4096)) > 0) {
 					writer.write(buf, 0, cnt);
 				}
+            } catch (final MalformedURLException e) {
+                throw new BoaException(url, e);
 			} catch (final IOException e) {
                 throw new BoaException(e.getMessage(), e);
 			} finally {
@@ -715,6 +717,8 @@ public class BoaClient implements AutoCloseable {
 				}
 
                 return sb.toString();
+            } catch (final MalformedURLException e) {
+                throw new BoaException(url, e);
 			} catch (final IOException e) {
                 throw new BoaException(e.getMessage(), e);
 			} finally {
