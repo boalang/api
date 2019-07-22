@@ -1,4 +1,5 @@
 import xmlrpc
+from job_handle import JobHandle
 
 class CookiesTransport(xmlrpc.client.Transport):
     """A Transport subclass that retains cookies over its lifetime."""
@@ -24,3 +25,6 @@ class CookiesTransport(xmlrpc.client.Transport):
                 cookie = header.split(";", 1)[0]
                 self._cookies.append(cookie)
         return super().parse_response(response)
+
+def parse_job(client, job):
+    return JobHandle(client, job['id'], job['submitted'], job['input'], job['compiler_status'], job['hadoop_status'])
