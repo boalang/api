@@ -196,7 +196,7 @@ class BoaClient(object):
         else:
             self.server.job.setpublic(job.id, 0)
 
-    def get_public(self, job):
+    def public_status(self, job):
         """Get the jobs public/private status.
         
         Args: 
@@ -218,7 +218,7 @@ class BoaClient(object):
         self.ensure_logged_in()
         return self.server.job.url(job.id)
 
-    def get_public_url(self, job):
+    def public_url(self, job):
         """Get the jobs public page URL.
         
         Args: 
@@ -236,7 +236,7 @@ class BoaClient(object):
         self.ensure_logged_in()
         return self.server.job.compilerErrors(job.id)
 
-    def get_source(self, job):
+    def source(self, job):
         """Return the source query for this job.
         
         Args: 
@@ -245,7 +245,8 @@ class BoaClient(object):
         self.ensure_logged_in()
         return self.server.job.source(job)
 
-    def get_output(self, job, start, length):
+    def output(self, job, start, length):
         """Return the output for this job, if it finished successfully and has output."""
         self.ensure_logged_in()
         return self.server.job.output(job.id, start, length)
+    

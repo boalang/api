@@ -48,25 +48,25 @@ class JobHandle:
 		"""
 		return self.client.set_public(self, status)
 
-	def get_public(self):
+	def public_status(self):
 		"""Get the jobs public/private status."""
-		return self.client.get_public(self)
+		return self.client.public_status(self)
 
-	def get_public_url(self):
+	def public_url(self):
 		"""Get the jobs public page URL."""
-		return self.client.get_public_url(self)
+		return self.client.public_url(self)
 
-	def get_source(self):
+	def source(self):
 		"""Return the source query for this job."""
-		return self.client.get_source(self)
+		return self.client.source(self)
 
 	def get_compiler_errors(self):
 		"""Return any errors from trying to compile the job."""
 		return self.client.get_compiler_errors(self)
 
-	def get_output(self, start=0, length=1000):
+	def output(self, start=0, length=1000):
 		"""Return the output for this job, if it finished successfully and has output."""
-		return self.client.get_output(self, start, length)
+		return self.client.output(self, start, length)
 		
 	def refresh(self):
 		"""Refreshes the cached data for this job."""
