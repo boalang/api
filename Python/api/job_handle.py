@@ -25,36 +25,51 @@ class JobHandle:
 		+', execution_status: (' + str(self.exec_status) + ')')
 	
 	def stop(self):
+		"""Stops the job if it is running."""
 		return self.client.stop(self)
 		
 	def resubmit(self):
+		"""Resubmits this job."""
 		return self.client.resubmit(self)
 		
 	def delete(self):
+		"""Deletes this job from the framework."""
 		return self.client.delete(self)
 
 	def get_url(self):
+		"""Retrieves the jobs URL."""
 		return self.client.get_url(self)
 
 	def set_public(self, status):
+		"""Modifies the public/private status of this job.
+		
+		Args: 
+			status (bool): 'True' to make it public, False to make it private
+		"""
 		return self.client.set_public(self, status)
 
 	def get_public(self):
+		"""Get the jobs public/private status."""
 		return self.client.get_public(self)
 
 	def get_public_url(self):
+		"""Get the jobs public page URL."""
 		return self.client.get_public_url(self)
 
 	def get_source(self):
+		"""Return the source query for this job."""
 		return self.client.get_source(self)
 
 	def get_compiler_errors(self):
+		"""Return any errors from trying to compile the job."""
 		return self.client.get_compiler_errors(self)
 
 	def get_output(self, start=0, length=1000):
+		"""Return the output for this job, if it finished successfully and has output."""
 		return self.client.get_output(self, start, length)
 		
 	def refresh(self):
+		"""Refreshes the cached data for this job."""
 		job = self.client.get_job(self)
 		self.compiler_status = job['compiler_status']
 		self.exec_status = job['execution_status']

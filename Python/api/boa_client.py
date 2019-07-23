@@ -157,18 +157,39 @@ class BoaClient(object):
         return newDict
 
     def stop(self, job):
+        """Stops the execution of a job
+
+        Args:
+            job (JobHandle): the job whose execution you want to stop
+        """
         self.ensure_logged_in()
         self.server.job.stop(job.id)
 
     def resubmit(self, job):
+        """Resubmits a job to the framework
+
+        Args: 
+            job (JobHandle): The job you want to resubmit
+        """
         self.ensure_logged_in()
         self.server.job.resubmit(job.id)
 
     def delete(self, job):
+        """Deletes this job from the framework.
+        
+        Args: 
+            job (JobHandle):
+        """
         self.ensure_logged_in()
         self.server.job.delete(job.id)
 
     def set_public(self, job, is_public):
+        """Modifies the public/private status of this job.
+		
+		Args: 
+			is_public (bool): 'True' to make it public, False to make it private
+            job (JobHandle)
+		"""
         self.ensure_logged_in()
         if is_public is True:
             self.server.job.setpublic(job.id, 1)
@@ -176,6 +197,11 @@ class BoaClient(object):
             self.server.job.setpublic(job.id, 0)
 
     def get_public(self, job):
+        """Get the jobs public/private status.
+        
+        Args: 
+            job (JobHandle)
+        """
         self.ensure_logged_in()
         result = self.server.job.public(job.id)
         if result is 1:
@@ -184,21 +210,42 @@ class BoaClient(object):
             return False
 
     def get_url(self, job):
+        """Retrieves the jobs URL.
+        
+        Args: 
+            job (JobHandle)
+        """
         self.ensure_logged_in()
         return self.server.job.url(job.id)
 
     def get_public_url(self, job):
+        """Get the jobs public page URL.
+        
+        Args: 
+            job (JobHandle)
+        """
         self.ensure_logged_in()
         return self.server.job.publicurl(job.id)
 
     def get_compiler_errors(self, job):
+        """Return any errors from trying to compile the job.
+        
+        Args: 
+            job (JobHandle)
+        """
         self.ensure_logged_in()
         return self.server.job.compilerErrors(job.id)
 
     def get_source(self, job):
+        """Return the source query for this job.
+        
+        Args: 
+            job (JobHandle)
+        """
         self.ensure_logged_in()
         return self.server.job.source(job)
 
     def get_output(self, job, start, length):
+        """Return the output for this job, if it finished successfully and has output."""
         self.ensure_logged_in()
         return self.server.job.output(job.id, start, length)
