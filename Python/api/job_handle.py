@@ -23,3 +23,40 @@ class JobHandle:
 		return str('id: ' + str(self.id) + ', date:' + str(self.date) + 
 		', dataset:' + str(self.dataset) + ', compiler_status: (' + str(self.compiler_status) + ')' 
 		+', execution_status: (' + str(self.exec_status) + ')')
+	
+	def stop(self):
+		return self.client.stop(self)
+		
+	def resubmit(self):
+		return self.client.resubmit(self)
+		
+	def delete(self):
+		return self.client.delete(self)
+
+	def get_url(self):
+		return self.client.get_url(self)
+
+	def set_public(self, status):
+		return self.client.set_public(self, status)
+
+	def get_public(self):
+		return self.client.get_public(self)
+
+	def get_public_url(self):
+		return self.client.get_public_url(self)
+
+	def get_source(self):
+		return self.client.get_source(self)
+
+	def get_compiler_errors(self):
+		return self.client.get_compiler_errors(self)
+
+	def get_output(self, start=0, length=1000):
+		return self.client.get_output(self, start, length)
+		
+	def refresh(self):
+		job = self.client.get_job(self)
+		self.compiler_status = job['compiler_status']
+		self.exec_status = job['execution_status']
+		self.date = job['date']
+        

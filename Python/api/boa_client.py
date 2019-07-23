@@ -155,3 +155,50 @@ class BoaClient(object):
             for i in list:
                 newDict.append(util.parse_job(self, i))
         return newDict
+
+    def stop(self, job):
+        self.ensure_logged_in()
+        self.server.job.stop(job.id)
+
+    def resubmit(self, job):
+        self.ensure_logged_in()
+        self.server.job.resubmit(job.id)
+
+    def delete(self, job):
+        self.ensure_logged_in()
+        self.server.job.delete(job.id)
+
+    def set_public(self, job, is_public):
+        self.ensure_logged_in()
+        if is_public is True:
+            self.server.job.setpublic(job.id, 1)
+        else:
+            self.server.job.setpublic(job.id, 0)
+
+    def get_public(self, job):
+        self.ensure_logged_in()
+        result = self.server.job.public(job.id)
+        if result is 1:
+            return True
+        else:
+            return False
+
+    def get_url(self, job):
+        self.ensure_logged_in()
+        return self.server.job.url(job.id)
+
+    def get_public_url(self, job):
+        self.ensure_logged_in()
+        return self.server.job.publicurl(job.id)
+
+    def get_compiler_errors(self, job):
+        self.ensure_logged_in()
+        return self.server.job.compilerErrors(job.id)
+
+    def get_source(self, job):
+        self.ensure_logged_in()
+        return self.server.job.source(job)
+
+    def get_output(self, job, start, length):
+        self.ensure_logged_in()
+        return self.server.job.output(job.id, start, length)
