@@ -120,8 +120,8 @@ class BoaClient(object):
         """
         self.ensure_logged_in()
         id = 0 if dataset is None else dataset.get_id()
-        job = self.server.boa.submit(query, self.get_datasets()[id]['id'])
-        return parse_job(self, job)
+        job = self.server.boa.submit(query, self.datasets()[id]['id'])
+        return util.parse_job(self, job)
 
     def get_job(self, id):
         """Retrieves a job given an id.
@@ -133,7 +133,7 @@ class BoaClient(object):
             JobHandle: the desired job.
         """
         self.ensure_logged_in()
-        return parse_job(self.server, self.server.boa.job(id))
+        return util.parse_job(self, self.server.boa.job(id))
 
     def job_list(self, pub_only=False, offset=0, length=1000):
         """Returns a list of the most recent jobs, based on an offset and length.
@@ -243,10 +243,11 @@ class BoaClient(object):
             job (JobHandle)
         """
         self.ensure_logged_in()
-        return self.server.job.source(job)
+        return self.server.job.source(job.id)
 
-    def output(self, job, start, length):
-        """Return the output for this job, if it finished successfully and has output."""
+    def output(self, job):
+        """Return the output for this job, if it finished successfully and has an output."""
         self.ensure_logged_in()
-        return self.server.job.output(job.id, start, length)
-    
+        if job.exec_status != "Finished":
+            return "Job is currently running"
+        return self.server.job.output(job.id)

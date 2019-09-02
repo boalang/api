@@ -64,14 +64,13 @@ class JobHandle:
 		"""Return any errors from trying to compile the job."""
 		return self.client.get_compiler_errors(self)
 
-	def output(self, start=0, length=1000):
+	def output(self):
 		"""Return the output for this job, if it finished successfully and has output."""
-		return self.client.output(self, start, length)
+		return self.client.output(self)
 		
 	def refresh(self):
 		"""Refreshes the cached data for this job."""
-		job = self.client.get_job(self)
-		self.compiler_status = job['compiler_status']
-		self.exec_status = job['execution_status']
-		self.date = job['date']
-        
+		job = self.client.get_job(self.id)
+		self.compiler_status = job.compiler_status
+		self.exec_status = job.exec_status
+		self.date = job.date
