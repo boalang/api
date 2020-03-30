@@ -232,8 +232,8 @@ public final class JobHandle implements Serializable {
 	}
 
 	/**
-     * Store the output for this job into a {@link java.io.File}, if it
-     * finished successfully and has output.
+	 * Store the output for this job into a {@link java.io.File}, if it
+	 * finished successfully and has output.
 	 *
 	 * @param f where to store the file
 	 * @throws BoaException if the command fails for any reason

@@ -140,17 +140,17 @@ public class BoaClient implements AutoCloseable {
 		xmlRpcClient.setConfig(config);
 	}
 
-    private Object execute(final Class c, final String cmd, final Object[] args) throws BoaException, XmlRpcException  {
-        final Object ret = execute(cmd, args);
-        if (!c.isInstance(ret)) {
-            throw new BoaException("unexpected/missing/invalid API result value '" + ret.toString() + "'");
-        }
-        return ret;
-    }
+	private Object execute(final Class c, final String cmd, final Object[] args) throws BoaException, XmlRpcException  {
+		final Object ret = execute(cmd, args);
+		if (!c.isInstance(ret)) {
+			throw new BoaException("unexpected/missing/invalid API result value '" + ret.toString() + "'");
+		}
+		return ret;
+	}
 
-    private Object execute(final String cmd, final Object[] args) throws XmlRpcException  {
-        return xmlRpcClient.execute(cmd, args);
-    }
+	private Object execute(final String cmd, final Object[] args) throws XmlRpcException  {
+		return xmlRpcClient.execute(cmd, args);
+	}
 
 	/**
 	 * Method to log into the remote API.
@@ -184,8 +184,8 @@ public class BoaClient implements AutoCloseable {
 					};
 				}
 			});
-        } catch (final BoaException e) {
-            throw new LoginException(e.getMessage(), e);
+		} catch (final BoaException e) {
+			throw new LoginException(e.getMessage(), e);
 		} catch (final XmlRpcHttpTransportException e) {
 			throw new LoginException("Invalid path given to Boa API.", e);
 		} catch (final XmlRpcException e) {
@@ -227,8 +227,8 @@ public class BoaClient implements AutoCloseable {
 					};
 				}
 			});
-        } catch (final BoaException e) {
-            throw new LoginException(e.getMessage(), e);
+		} catch (final BoaException e) {
+			throw new LoginException(e.getMessage(), e);
 		} catch (final XmlRpcHttpTransportException e) {
 			throw new LoginException("Invalid path given to Boa API.", e);
 		} catch (final XmlRpcException e) {
@@ -639,9 +639,9 @@ public class BoaClient implements AutoCloseable {
 				final HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
 				HttpURLConnection.setFollowRedirects(true);
 				conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-                conn.connect();
+				conn.connect();
 
-                inStr = conn.getInputStream();
+				inStr = conn.getInputStream();
 				final String encoding = conn.getContentEncoding();
 				if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
 					inStr = new GZIPInputStream(inStr);
@@ -657,10 +657,10 @@ public class BoaClient implements AutoCloseable {
 				while ((cnt = br.read(buf, 0, 4096)) > 0) {
 					writer.write(buf, 0, cnt);
 				}
-            } catch (final MalformedURLException e) {
-                throw new BoaException(url, e);
+			} catch (final MalformedURLException e) {
+				throw new BoaException(url, e);
 			} catch (final IOException e) {
-                throw new BoaException(e.getMessage(), e);
+				throw new BoaException(e.getMessage(), e);
 			} finally {
 				try {
 					if (inStr != null)
@@ -683,7 +683,7 @@ public class BoaClient implements AutoCloseable {
 	String getOutput(final long id, final long start, final long len) throws BoaException, NotLoggedInException {
 		ensureLoggedIn();
 
-        final StringBuffer sb = new StringBuffer();
+		final StringBuffer sb = new StringBuffer();
 
 		try {
 			final String url = (String)execute(String.class, METHOD_JOB_OUTPUT, new Object[] { "" + id });
@@ -692,15 +692,15 @@ public class BoaClient implements AutoCloseable {
 			try {
 				final HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
 				HttpURLConnection.setFollowRedirects(true);
-                // FIXME investigate why enabling zip encoding breaks Range requests
+				// FIXME investigate why enabling zip encoding breaks Range requests
 				//conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-                if (len < 1)
-                    conn.setRequestProperty("Range", "bytes=" + start + "-");
-                else
-                    conn.setRequestProperty("Range", "bytes=" + start + "-" + (start + len - 1));
-                conn.connect();
+				if (len < 1)
+					conn.setRequestProperty("Range", "bytes=" + start + "-");
+				else
+					conn.setRequestProperty("Range", "bytes=" + start + "-" + (start + len - 1));
+				conn.connect();
 
-                inStr = conn.getInputStream();
+				inStr = conn.getInputStream();
 				final String encoding = conn.getContentEncoding();
 				if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
 					inStr = new GZIPInputStream(inStr);
@@ -716,11 +716,11 @@ public class BoaClient implements AutoCloseable {
 					sb.append(buf, 0, cnt);
 				}
 
-                return sb.toString();
-            } catch (final MalformedURLException e) {
-                throw new BoaException(url, e);
+				return sb.toString();
+			} catch (final MalformedURLException e) {
+				throw new BoaException(url, e);
 			} catch (final IOException e) {
-                throw new BoaException(e.getMessage(), e);
+				throw new BoaException(e.getMessage(), e);
 			} finally {
 				try {
 					if (inStr != null)
