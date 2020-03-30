@@ -4,8 +4,8 @@
 	<property name="release.version" value="0.2.0" />
 
 	<!-- Java version -->
-	<property name="ant.build.javac.source" value="1.5" />
-	<property name="ant.build.javac.target" value="1.5" />
+	<property name="ant.build.javac.source" value="1.8" />
+	<property name="ant.build.javac.target" value="1.8" />
 
 	<!-- debug properties -->
 	<property name="debug.enabled" value="on" />
