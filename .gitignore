@@ -4,3 +4,4 @@
 **/obj/**
 **/*.suo
 **/*.userprefs
+**/__pycache__
