@@ -120,7 +120,7 @@ public class BoaClient implements AutoCloseable {
 	 */
 	public BoaClient(final String domain, final String path) {
 		if (domain.indexOf("/") != -1)
-			throw new IllegalArgumentException("Argument 'domain' should not contain the protocol (http://) or a path (/).");
+			throw new IllegalArgumentException("Argument 'domain' should not contain the protocol (https://) or a path (/).");
 		if (path.indexOf("/") != 0)
 			throw new IllegalArgumentException("Argument 'path' should start with '/'.");
 
@@ -129,7 +129,7 @@ public class BoaClient implements AutoCloseable {
 		 * a URL that is available for serving a specific set of service calls. See drupal
 		 * documentation for "Services 3.X". <a href="http://drupal.org/node/783236">http://drupal.org/node/783236</a>
 		 */
-		final String endpointURL = "http://" + domain + path;
+		final String endpointURL = "https://" + domain + path;
 		final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
 		try {
 			config.setServerURL(new URL(endpointURL));

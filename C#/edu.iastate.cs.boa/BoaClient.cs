@@ -30,7 +30,7 @@ namespace edu.iastate.cs.boa
         public string token;
     }
     
-    [XmlRpcUrl("http://boa.cs.iastate.edu/boa/?q=boa/api")]
+    [XmlRpcUrl("https://boa.cs.iastate.edu/boa/?q=boa/api")]
     public interface Boa : IXmlRpcProxy
     {
         [XmlRpcMethod("user.login")]
@@ -118,7 +118,7 @@ namespace edu.iastate.cs.boa
             * a URL that is available for serving a specific set of service calls. See drupal
             * documentation for "Services 3.X". <a href="http://drupal.org/node/783236">http://drupal.org/node/783236</a>
             */
-            xmlRpcClient.Url = "http://" + domain + path;
+            xmlRpcClient.Url = "https://" + domain + path;
         }
 
 		~BoaClient () {
@@ -132,7 +132,7 @@ namespace edu.iastate.cs.boa
         public BoaClient(String domain, String path)
         {
             if (domain.IndexOf("/") != -1)
-                throw new ArgumentException("Argument 'domain' should not contain the protocol (http://) or a path (/).");
+                throw new ArgumentException("Argument 'domain' should not contain the protocol (https://) or a path (/).");
             if (path.IndexOf("/") != 0)
                 throw new ArgumentException("Argument 'path' should start with '/'.");
 
@@ -141,7 +141,7 @@ namespace edu.iastate.cs.boa
             * a URL that is available for serving a specific set of service calls. See drupal
             * documentation for "Services 3.X". <a href="http://drupal.org/node/783236">http://drupal.org/node/783236</a>
             */
-            xmlRpcClient.Url = "http://" + domain + path;
+            xmlRpcClient.Url = "https://" + domain + path;
 
 
             /*XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();

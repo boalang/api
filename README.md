@@ -4,4 +4,4 @@ The Boa Client API provides programmatic access to the Boa language and infrastr
 
 # About Boa
 
-For more information about Boa, please see the main website: http://boa.cs.iastate.edu/
+For more information about Boa, please see the main website: https://boa.cs.iastate.edu/
