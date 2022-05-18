@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <project name="boa-api" default="package">
 	<!-- the current release version -->
-	<property name="release.version" value="0.2.0" />
+	<property name="release.version" value="0.2.1" />
 
 	<!-- Java version -->
 	<property name="ant.build.javac.source" value="1.8" />
